@@ -1,17 +1,11 @@
-provider "google" {
-  project = vars.project_id
-  region  = vars.region
-}
+module "main" {
+  source = "../../modules"
 
-terraform {
-  required_providers {
-    google = {
-      source = "hashicorp/google"
-    }
+  common = {
+    project_id  = var.project_id
+    region      = var.region
+    prefix      = var.prefix
+    environment = var.environment
   }
-
-  backend "gcs" {
-    bucket = "spino-tfstate"
-    prefix = "terraform/state"
-  }
+  vpc = var.vpc
 }
