@@ -1,0 +1,12 @@
+version: 3
+automerge: true
+projects:
+  - name: Production
+    dir: infra/terraform/environment/prod
+    autoplan:
+      when_modified:
+        - '*.tf'
+        - '*.tfvars'
+        - '../modules/**/*.tf'
+      enabled: true
+
