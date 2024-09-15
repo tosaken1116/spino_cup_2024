@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apps
+  namespace: argocd
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubenetes.default.svc
+  project: default
+  source:
+    repoURL: https://github.com/tosaken1116/spino_cup_2024
+    path: infra/manifest/argocd/apps
+    targetRevision: main
+  syncPolicy:
+    automated: {}
+
