@@ -9,4 +9,9 @@ projects:
         - '*.tfvars'
         - '../../modules/**/*.tf'
       enabled: true
-
+webhooks:
+  - event: apply
+    workspace-regex: .*
+    branch-regex: .*
+    kind: slack
+    channel: C07L9SGK7UM
