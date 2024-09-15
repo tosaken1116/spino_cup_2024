@@ -28,6 +28,9 @@ spec:
         image: ghcr.io/runatlantis/atlantis:v0.29.0 # 1. Replace <VERSION> with the most recent release.
         args: ["server", "--write-git-creds"]
         env:
+        - name: TEST
+          value: hogehoge
+
         - name: ATLANTIS_REPO_ALLOWLIST
           value: github.com/tosaken1116/spino_cup_2024
 
