@@ -1,0 +1,14 @@
+apiVersion: v1
+data:
+  config.yml: |
+    webhooks:
+    - event: apply
+      workspace-regex: .*
+      branch-regex: .*
+      kind: slack
+      channel: C07L9SGK7UM
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: configmap-text
+  namespace: atlantis
