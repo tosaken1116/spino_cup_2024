@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: atlantis
+  namespace: atlantis
 spec:
   serviceName: atlantis
   replicas: 1
