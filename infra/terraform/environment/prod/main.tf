@@ -8,4 +8,5 @@ module "main" {
     environment = var.environment
   }
   vpc = var.vpc
+  dns = var.dns
 }
