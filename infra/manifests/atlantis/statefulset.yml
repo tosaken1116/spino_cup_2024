@@ -49,6 +49,12 @@ spec:
               key: ghWebhookSecret
         ### End GitHub Config ###
 
+        - name: ATLANTIS_SLACK_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: atlantis-slack-app
+              key: slackAppToken
+
         - name: ATLANTIS_DATA_DIR
           value: /atlantis
         - name: ATLANTIS_PORT
