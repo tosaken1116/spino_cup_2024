@@ -9,4 +9,3 @@ projects:
         - '*.tfvars'
         - '../../modules/**/*.tf'
       enabled: true
-
