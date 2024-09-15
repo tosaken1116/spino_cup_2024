@@ -14,3 +14,9 @@ variable "vpc" {
     svc_cidr    = string
   })
 }
+
+variable "dns" {
+  type = object({
+    domain = string
+  })
+}
