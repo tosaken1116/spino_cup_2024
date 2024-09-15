@@ -24,4 +24,4 @@ jobs:
         with:
           version: '>= 379.0.0'
       - name: 'Upload test file'
-        run: 'echo "test" > test.txt && gsutil cp test.txt gs://<用意したGCSバケット名>'
+        run: 'echo "test" > test.txt && gsutil cp test.txt gs://spino-vrt'
