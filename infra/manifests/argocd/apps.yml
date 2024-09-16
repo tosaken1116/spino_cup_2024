@@ -6,11 +6,11 @@ metadata:
 spec:
   destination:
     namespace: argocd
-    server: https://kubenetes.default.svc
+    server: https://kubernetes.default.svc
   project: default
   source:
     repoURL: https://github.com/tosaken1116/spino_cup_2024
-    path: infra/manifest/argocd/apps
+    path: infra/manifests/argocd/apps
     targetRevision: main
   syncPolicy:
     automated: {}
