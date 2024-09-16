@@ -11,7 +11,7 @@ resource "google_storage_bucket" "web" {
 }
 
 resource "google_storage_bucket_iam_member" "public_access" {
-  bucket = google_storage_bucket.storage_bucket.name
+  bucket = google_storage_bucket.web.name
   role   = "roles/storage.objectViewer"
   member = "allUsers"
 }
