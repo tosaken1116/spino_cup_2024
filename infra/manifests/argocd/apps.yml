@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: apps
   namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.on-sync-succeeded.slack: "#team_母国語sql"
 spec:
   destination:
     namespace: argocd
