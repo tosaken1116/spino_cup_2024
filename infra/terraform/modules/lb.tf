@@ -7,13 +7,6 @@ resource "google_compute_backend_bucket" "backend_bucket" {
 resource "google_compute_url_map" "url_map" {
   name            = "${var.common.prefix}-url-map-${var.common.environment}"
   default_service = google_compute_backend_bucket.backend_bucket.self_link
-
-  # SPAのためにすべてのパスをindex.htmlにリダイレクト
-  default_url_redirect {
-    redirect_response_code = "MOVED_PERMANENTLY_DEFAULT"
-    https_redirect         = true
-    strip_query            = false
-  }
 }
 
 resource "google_compute_target_https_proxy" "https_proxy" {
