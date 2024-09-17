@@ -61,7 +61,7 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: 'projects/spino-cup-2024/locations/global/workloadIdentityPools/github-pool/providers/github'
+          workload_identity_provider: 'projects/753884543705/locations/global/workloadIdentityPools/github-pool/providers/github'
           service_account: 'github-actions-user@spino-cup-2024.iam.gserviceaccount.com'
 
       - name: Setup Cloud SDK
