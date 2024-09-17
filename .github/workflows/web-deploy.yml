@@ -28,7 +28,7 @@ jobs:
           node-version: '20.x'
 
       - name: Install pnpm
-        uses: pnpm/actions-setup@v4
+        uses: pnpm/action-setup@v4
         with:
           run_install: false
 
