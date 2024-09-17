@@ -14,13 +14,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-defaults:
-  run:
-    working-directory: frontend
-
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    defaults:
+      run:
+        working-directory: frontend
 
     steps:
       - name: Checkout
@@ -34,9 +36,11 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
+          package_json_file: frontend/package.json
           run_install: false
 
       - name: Get pnpm store directory
+        working-directory: frontend
         shell: bash
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
@@ -57,7 +61,7 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: 'projects/spino-cup-2024/locations/global/workloadIdentityPools/github-pool/providers/github'
+          workload_identity_provider: 'projects/753884543705/locations/global/workloadIdentityPools/github-pool/providers/github'
           service_account: 'github-actions-user@spino-cup-2024.iam.gserviceaccount.com'
 
       - name: Setup Cloud SDK
