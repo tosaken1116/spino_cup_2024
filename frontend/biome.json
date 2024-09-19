@@ -4,7 +4,8 @@
 		"enabled": true
 	},
 	"files": {
-		"ignore": ["**/*.config.*", "**/*.json"]
+		"include": ["src/**/*"],
+		"ignore": ["src/routeTree.gen.ts"]
 	},
 	"linter": {
 		"enabled": true,
