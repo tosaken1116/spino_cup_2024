@@ -17,7 +17,7 @@
       "setCommitStatus": false
     },
     "reg-publish-gcs-plugin": {
-      "bucket": "$REG_SUIT_GCS_BUCKET_NAME"
+      "bucketName": "$REG_SUIT_GCS_BUCKET_NAME"
     }
   }
 }
