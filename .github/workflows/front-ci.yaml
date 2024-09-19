@@ -263,3 +263,6 @@ jobs:
           version: ">= 379.0.0"
       - name: visual regression test
         run: pnpm run vrt
+        env:
+          REG_SUIT_CLIENT_ID: ${{secrets.REG_SUIT_CLIENT_ID}}
+          REG_SUIT_GCS_BUCKET_NAME: ${{secrets.REG_SUIT_GCS_BUCKET_NAME}}
