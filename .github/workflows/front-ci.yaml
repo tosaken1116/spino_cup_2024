@@ -244,6 +244,8 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           git checkout ${GITHUB_HEAD_REF#refs/heads/} || git checkout -b ${GITHUB_HEAD_REF#refs/heads/} && git pull
+      - name: setup node
+        uses: ./.github/actions/setup-node
       - name: Download Screenshots
         uses: actions/download-artifact@v4
         with:
