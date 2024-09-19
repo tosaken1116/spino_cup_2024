@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - frontend/**
+      - "!*.md"
+      - .github/workflows/front-ci.yaml
 
   pull_request:
     types: [opened, synchronize, reopened]
