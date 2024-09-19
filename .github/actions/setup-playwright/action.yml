@@ -1,0 +1,30 @@
+name: "setup playwright"
+description: "Setup playwright"
+runs:
+  using: composite
+  steps:
+    - name: Get Playwright Version For Browser Cache Key
+      id: get-playwright-version
+      run: |
+        cd frontend
+        echo "playwright-version=$(npx playwright --version | sed 's/ //g')" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Restore Cache Playwright Browser
+      id: restore-cache-playwright-chromium
+      uses: actions/cache/restore@v4
+      with:
+        path: /home/runner/.cache/ms-playwright
+        key: playwright-chromium-${{ steps.get-playwright-version.outputs.playwright-version }}
+
+    - name: Install Playwright Browsers
+      if: ${{ steps.restore-cache-playwright-chromium.outputs.cache-hit != 'true' }}
+      run: npx playwright install chromium
+      shell: bash
+
+    - name: Save Cache – Playwright Browser
+      uses: actions/cache@v4
+      id: save-cache-playwright-chromium
+      with:
+        path: /home/runner/.cache/ms-playwright
+        key: ${{ steps.restore-cache-playwright-chromium.outputs.cache-primary-key }}

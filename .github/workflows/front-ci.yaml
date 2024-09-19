@@ -1,0 +1,291 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+  actions: read
+
+defaults:
+  run:
+    working-directory: frontend
+    shell: bash
+
+jobs:
+  install-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install modules
+        uses: ./.github/actions/setup-node
+
+  lint:
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Cached Dependencies
+        uses: ./.github/actions/setup-node
+      - name: Lint
+        run: pnpm run lint
+
+  test:
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Cached Dependencies
+        uses: ./.github/actions/setup-node
+      - name: Get number of CPU cores
+        id: cpu-cores
+        uses: SimenB/github-actions-cpu-cores@v2
+      - name: Test
+        run: pnpm run test --maxWorkers ${{ steps.cpu-cores.outputs.count }}
+
+  build:
+    needs: install-dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Cached Dependencies
+        uses: ./.github/actions/setup-node
+      - name: build
+        run: pnpm run build
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/dist
+      - name: upload storybook build
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-build
+          path: frontend/storybook-static
+
+  bundle-analysis:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: setup node
+        uses: ./.github/actions/setup-node
+      - name: copy base branch bundle
+        uses: softwareforgood/check-artifact-v4-existence@v0
+        id: get-base-bundle
+        with:
+          name: "frontend-bundle"
+      - name: echo result
+        run: echo ${{ steps.get-base-bundle.outputs.exists }}
+      - name: generate bundle
+        if: steps.get-base-bundle.outputs.exists == 'false'
+        run: |
+          git checkout ${{ github.base_ref }}
+          pnpm run bundle:analyze
+          mv __bundle__/result.json __bundle__/base.json
+        shell: bash
+      - name: upload artifact
+        if: steps.get-base-bundle.outputs.exists == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: "frontend-bundle"
+          path: frontend/__bundle__/base.json
+          overwrite: true
+      - name: download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: "frontend-bundle"
+      - name: Analyze current bundle
+        run: pnpm run bundle:analyze
+      - name: check bundle exists
+        run: ls -R __bundle__
+      - name: Compare with base branch bundle
+        if: success() && github.event_name == 'pull_request'
+        run: pnpm run -s bundle:compare > comment.txt
+      - name: Comment to Pull Request
+        if: success() && github.event_name == 'pull_request'
+        uses: ./.github/actions/pull-request-comment
+        with:
+          includes-comment: "<!-- _BUNDLE_ANALYSIS_ -->"
+          comment-body: $(cat frontend/comment.txt)
+
+  report-diff:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get PR Diff
+        id: diff
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          git diff --numstat origin/${{ github.base_ref }} > diff.txt
+          TOTAL_LINES=$(awk '{ added += $1; removed += $2 } END { print added+removed }' diff.txt)
+          echo "total-lines=$TOTAL_LINES" >> $GITHUB_OUTPUT
+
+      - name: Create Diff Comment
+        uses: actions/github-script@v3
+        id: diff-comment
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const totalLines = ${{ steps.diff.outputs.total-lines }};
+            const warning = `> [!WARNING]\n> The code changes are nearly 400 lines. Reviewers, please review carefully.\n> Reviewees, try to keep changes under 300 lines.`;
+            const caution =`> [!CAUTION]\n> The code changes exceed 400 lines. This amount of changes may increase the risk of bugs.\n> Reviewees might find it easier to review if the pull request is split.`;
+            const body = `**Total Lines Changed:** ${totalLines}
+            ${totalLines > 400 ? caution : totalLines > 300 ? warning:""}
+            `
+            core.setOutput("body", body)
+      - name: Comment to Pull Request
+        uses: ./.github/actions/pull-request-comment
+        with:
+          includes-comment: "<!-- __DIFF -->"
+          comment-body: ${{steps.diff-comment.outputs.body}}
+
+  lighthouse:
+    if: github.event_name == 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: setup node
+        uses: ./.github/actions/setup-node
+      - name: Use Cached Build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/dist
+
+      - name: Run Lighthouse
+        id: lighthouse
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          configPath: frontend/lighthouserc.cjs
+      - name: Create Lighthouse Comment
+        id: light-house-comment
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const results = ${{steps.lighthouse.outputs.manifest}}
+            const links = ${{steps.lighthouse.outputs.links}}
+            const mark = (value) => {
+            if (value >= 0.9) {
+                return '🟢';
+            } else if (value >= 0.5) {
+                return '🟡';
+            } else {
+                return '🔴';
+            }
+            };
+            const body = `
+            # Lighthouse Report
+            | URL | Performance | Accessibility | Best Practices | SEO | PWA | Details |
+            | --- | ----------- | ------------- | -------------- | --- | --- | ------- |
+            ${results.map((result) => `| ${result.url} | ${mark(result.summary.performance)}${Math.trunc(result.summary.performance * 100)} | ${mark(result.summary.accessibility)}${Math.trunc(result.summary.accessibility * 100)} | ${mark(result.summary['best-practices'])}${Math.trunc(result.summary['best-practices'] * 100)} | ${mark(result.summary.seo)}${Math.trunc(result.summary.seo * 100)} | ${mark(result.summary.pwa)}${Math.trunc(result.summary.pwa * 100)} | :pencil: [result](${links[result.url]}) |`).join('\n')}
+            `;
+
+            core.setOutput("body", body)
+      - name: Comment to Pull Request
+        uses: ./.github/actions/pull-request-comment
+        with:
+          includes-comment: "<!-- __LIGHTHOUSE -->"
+          comment-body: ${{steps.light-house-comment.outputs.body}}
+  report-useless-modules:
+    needs: install-dependencies
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Analyze modules
+        id: useless-modules
+        run: |
+          echo "result=$(npx depcheck . --skip-missing --json)" >> $GITHUB_OUTPUT
+      - name: Create Useless Modules Comment
+        id: useless-modules-comment
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const json = ${{steps.useless-modules.outputs.result}};
+            const isUselessModuleEmpty = json.dependencies.length === 0;
+            const uselessModulesComment = isUselessModuleEmpty ? 'useless modules not found✨' : `> [!CAUTION]\n> The following modules are not used in the code. Please remove them.\n> ${json.dependencies.map((module) => `- ${module}`).join('\n> ')}`;
+            core.setOutput("body", uselessModulesComment)
+      - name: report useless modules
+        uses: ./.github/actions/pull-request-comment
+        with:
+          includes-comment: "<!-- __USELESS_MODULES -->"
+          comment-body: ${{steps.useless-modules-comment.outputs.body}}
+  capture-screenshots:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: setup node
+        uses: ./.github/actions/setup-node
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: storybook-build
+          path: frontend/storybook-static
+      - name: setup playwright
+        uses: ./.github/actions/setup-playwright
+      - name: capture screenshots
+        run: |
+          pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
+            "pnpm run start:storybook" \
+            "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm run screenshot"
+      - name: upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: frontend/__screenshots__
+
+  visual-regression-test:
+    needs: capture-screenshots
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: workaround for detached HEAD
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          git checkout ${GITHUB_REF#refs/heads/} || git checkout -b ${GITHUB_REF#refs/heads/} && git pull
+      - name: workaround for detached HEAD in PR
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          git checkout ${GITHUB_HEAD_REF#refs/heads/} || git checkout -b ${GITHUB_HEAD_REF#refs/heads/} && git pull
+      - name: Download Screenshots
+        uses: actions/download-artifact@v4
+        with:
+          name: screenshots
+          path: frontend/__screenshots__
+      - name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v2"
+        id: "auth"
+        with:
+          workload_identity_provider: "projects/753884543705/locations/global/workloadIdentityPools/github-pool/providers/github"
+          service_account: "github-actions-user@spino-cup-2024.iam.gserviceaccount.com"
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+        with:
+          version: ">= 379.0.0"
+      - name: visual regression test
+        run: pnpm run vrt

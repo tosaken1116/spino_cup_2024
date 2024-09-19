@@ -1,13 +1,16 @@
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vitest/config";
+import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   test: {
-    exclude: ["**/node_modules/**"],
+    include: ["src/**/*.ts"],
+    exclude: ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.d.ts"],
     coverage: {
-      exclude: ["**/node_modules/**", "**/*.config.*", "**/*.d.ts"],
+      include: ["src/**/*.ts"],
+      exclude: ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.d.ts"],
     },
   },
-  plugins: [react()],
+  plugins: [react(), TanStackRouterVite()],
 });
