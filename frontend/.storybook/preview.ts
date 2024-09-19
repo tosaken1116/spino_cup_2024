@@ -1,5 +1,6 @@
 import type { Preview } from "@storybook/react";
 import { withScreenshot } from "storycap";
+import "../src/index.css";
 
 export const decorators = [withScreenshot];
 
