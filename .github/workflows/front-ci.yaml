@@ -124,38 +124,6 @@ jobs:
           includes-comment: "<!-- _BUNDLE_ANALYSIS_ -->"
           comment-body: $(cat frontend/comment.txt)
 
-  report-diff:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Get PR Diff
-        id: diff
-        run: |
-          git fetch origin ${{ github.base_ref }}
-          git diff --numstat origin/${{ github.base_ref }} > diff.txt
-          TOTAL_LINES=$(awk '{ added += $1; removed += $2 } END { print added+removed }' diff.txt)
-          echo "total-lines=$TOTAL_LINES" >> $GITHUB_OUTPUT
-
-      - name: Create Diff Comment
-        uses: actions/github-script@v3
-        id: diff-comment
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const totalLines = ${{ steps.diff.outputs.total-lines }};
-            const warning = `> [!WARNING]\n> The code changes are nearly 400 lines. Reviewers, please review carefully.\n> Reviewees, try to keep changes under 300 lines.`;
-            const caution =`> [!CAUTION]\n> The code changes exceed 400 lines. This amount of changes may increase the risk of bugs.\n> Reviewees might find it easier to review if the pull request is split.`;
-            const body = `**Total Lines Changed:** ${totalLines}
-            ${totalLines > 400 ? caution : totalLines > 300 ? warning:""}
-            `
-            core.setOutput("body", body)
-      - name: Comment to Pull Request
-        uses: ./.github/actions/pull-request-comment
-        with:
-          includes-comment: "<!-- __DIFF -->"
-          comment-body: ${{steps.diff-comment.outputs.body}}
-
   lighthouse:
     if: github.event_name == 'pull_request'
     needs: build
