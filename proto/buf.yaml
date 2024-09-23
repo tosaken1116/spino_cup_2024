@@ -1,0 +1,14 @@
+version: v2
+breaking:
+  use:
+    - FILE
+lint:
+  use:
+    - DEFAULT
+deps:
+  - buf.build/googleapis/googleapis
+modules:
+  - path: .
+    excludes:
+      - googleapis/googleapis
+      - plugins
