@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option go_package = "./";
+
+package room.resources;
+
+message Room {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string owner_id = 4;
+  repeated string member_ids = 5;
+}
+
+message UserPosition {
+  double x = 1;
+  double y = 2;
+  double z = 3;
+  string color = 4;
+  bool is_clicked = 5;
+  string id = 6;
+}
+
+message ScreenPosition{
+  double lat = 1;
+  double lng = 2;
+}
