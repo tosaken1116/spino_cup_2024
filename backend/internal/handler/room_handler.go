@@ -46,11 +46,13 @@ func (r *roomHandler) CreateRoom(c echo.Context) error {
 func (r *roomHandler) GetRoom(c echo.Context) error {
 	id := c.Param("id")
 	room, err := r.roomUsecase.GetRoom(c.Request().Context(), id)
-	if errors.Is(err, model.ErrRoomNotFound) {
-		return echo.NewHTTPError(http.StatusNotFound, err).SetInternal(err)
-	}
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err).SetInternal(err)
+		switch {
+		case errors.Is(err, model.ErrRoomNotFound), errors.Is(err, model.ErrRoomIDInvalid):
+			return echo.NewHTTPError(http.StatusNotFound, err).SetInternal(err)
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, err).SetInternal(err)
+		}
 	}
 
 	return c.JSON(http.StatusOK, room)
@@ -70,7 +72,12 @@ func (r *roomHandler) UpdateRoom(c echo.Context) error {
 		Description: req.Description,
 	})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err).SetInternal(err)
+		switch {
+		case errors.Is(err, model.ErrRoomNotFound), errors.Is(err, model.ErrRoomIDInvalid):
+			return echo.NewHTTPError(http.StatusNotFound, err).SetInternal(err)
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, err).SetInternal(err)
+		}
 	}
 
 	return c.JSON(http.StatusOK, room)

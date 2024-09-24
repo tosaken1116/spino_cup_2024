@@ -58,7 +58,7 @@ func (r *roomUsecase) CreateRoom(ctx context.Context, dto *RoomDTO) (*RoomDTO, e
 func (r *roomUsecase) GetRoom(ctx context.Context, rawid string) (*RoomDTO, error) {
 	id, err := model.ParseRoomID(rawid)
 	if err != nil {
-		return nil, err
+		return nil, model.ErrRoomIDInvalid
 	}
 
 	room, err := r.repo.GetRoom(ctx, id)
@@ -73,7 +73,7 @@ func (r *roomUsecase) GetRoom(ctx context.Context, rawid string) (*RoomDTO, erro
 func (r *roomUsecase) UpdateRoom(ctx context.Context, dto *RoomDTO) (*RoomDTO, error) {
 	id, err := model.ParseRoomID(dto.ID)
 	if err != nil {
-		return nil, err
+		return nil, model.ErrRoomIDInvalid
 	}
 
 	room, err := r.repo.GetRoom(ctx, id)
