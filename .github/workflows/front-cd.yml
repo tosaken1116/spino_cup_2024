@@ -37,6 +37,9 @@ jobs:
         with:
           name: frontend-build
           path: frontend/dist
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
       - name: Setup Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
