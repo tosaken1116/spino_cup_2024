@@ -1,14 +1,12 @@
 version: v2
-breaking:
-  use:
-    - FILE
+modules:
+  - path: ./proto
+deps:
+  - buf.build/googleapis/googleapis
 lint:
   use:
     - DEFAULT
-deps:
-  - buf.build/googleapis/googleapis
-modules:
-  - path: .
-    excludes:
-      - googleapis/googleapis
-      - plugins
+    - UNARY_RPC
+breaking:
+  use:
+    - PACKAGE

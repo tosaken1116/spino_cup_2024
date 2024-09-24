@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -41,8 +40,7 @@ func main() {
 
 func generateSchema(gen *protogen.Plugin, file *protogen.File) {
 	// "domain/[package]/schema.ts" にファイルを生成
-	packageName := strings.Replace(strings.ToLower(string(*file.Proto.Package)), ".rpc", "", -1)
-	log.Print(packageName)
+	packageName := strings.Replace(strings.ToLower(strings.Replace(string(*file.Proto.Package),"api.","",-1)), ".rpc", "", -1)
 	outputPath := filepath.Join("domain", packageName, "schema.ts")
 	if _, err := os.Stat(outputPath); err == nil {
 		// ファイルが既に存在する場合、生成をスキップ
@@ -123,7 +121,7 @@ func goToTSType(goType string) string {
 }
 func generateDomainModel(gen *protogen.Plugin, file *protogen.File) {
 	// "domain/[package]/model.ts" にファイルを生成
-	packageName := strings.Replace(strings.ToLower(string(*file.Proto.Package)), ".resources", "", -1)
+	packageName := strings.Replace(strings.ToLower(strings.Replace(string(*file.Proto.Package),"api.","",-1)), ".resources", "", -1)
 	outputPath := filepath.Join("domain", packageName, "model.ts")
 	if _, err := os.Stat(outputPath); err == nil {
 		// ファイルが既に存在する場合、生成をスキップ
@@ -191,7 +189,8 @@ func generateApiClient(gen *protogen.Plugin, files []*protogen.File) {
 		if strings.Contains(packageName, "rpc") || strings.Contains(packageName, "resource") {
 			continue // rpc や resource を含むパッケージをスキップ
 		}
-		g.P(fmt.Sprintf("import * as %sSchema from '../domain/%s/schema';", ToUpperCamelCase(packageName), packageName))
+		packageName = strings.Replace(packageName, "api.", "", -1)
+		g.P(fmt.Sprintf("import type * as %sSchema from '../domain/%s/schema';", ToUpperCamelCase(packageName), packageName))
 	}
 	g.P("")
 
@@ -205,6 +204,7 @@ func generateApiClient(gen *protogen.Plugin, files []*protogen.File) {
 		if strings.Contains(packageName, "rpc") || strings.Contains(packageName, "resource") {
 			continue // rpc や resource を含むパッケージをスキップ
 		}
+		packageName = strings.Replace(packageName, "api.", "", -1)
 		g.P(fmt.Sprintf("  %s: {", packageName))
 		for _, service := range file.Services {
 			for _, method := range service.Methods {
@@ -219,17 +219,17 @@ func generateApiClient(gen *protogen.Plugin, files []*protogen.File) {
 				methodName := strings.ToLower(string(method.GoName[0])) + method.GoName[1:]
 
 				// 各APIメソッドの生成
-				g.P(fmt.Sprintf("    %s: async (req: %s): Promise<%s> => {", methodName, reqType, respType))
-				g.P(fmt.Sprintf("      const res = await fetch(`${baseUrl}%s`, {", urlPath))
-				g.P(fmt.Sprintf("        method: '%s',", httpMethod))
-				g.P("        headers: { 'Content-Type': 'application/json' },")
-				g.P("        body: JSON.stringify(req)")
-				g.P("      });")
-				g.P("      if (!res.ok) {")
-				g.P("        throw new Error('Network response was not ok');")
-				g.P("      }")
-				g.P("      return await res.json();")
-				g.P("    },")
+				g.P(fmt.Sprintf("		%s: async (req: %s): Promise<%s> => {", methodName, reqType, respType))
+				g.P(fmt.Sprintf("			const res = await fetch(`${baseUrl}%s`, {", urlPath))
+				g.P(fmt.Sprintf("				method: '%s',", httpMethod))
+				g.P("				headers: { 'Content-Type': 'application/json' },")
+				g.P("				body: JSON.stringify(req)")
+				g.P("			});")
+				g.P("			if (!res.ok) {")
+				g.P("				throw new Error('Network response was not ok');")
+				g.P("			}")
+				g.P("			return await res.json();")
+				g.P("		},")
 			}
 		}
 		g.P("  },")
