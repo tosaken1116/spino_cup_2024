@@ -65,9 +65,5 @@ spec:
             - "spino-cup-2024:asia-northeast1:spino-db-instance-prod"
           securityContext:
             runAsNonRoot: true
-          resources:
-            requests:
-              memory: "2Gi"
-              cpu: "1"
       restartPolicy: Always
       serviceAccountName: api-ksa
