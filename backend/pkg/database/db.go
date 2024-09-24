@@ -24,6 +24,8 @@ type Config struct {
 func New(cfg *Config) (*DB, error) {
 	dns := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName)
 
+	fmt.Println(dns)
+
 	sqldb, err := sql.Open("mysql", dns)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open mysql connection: %w", err)
