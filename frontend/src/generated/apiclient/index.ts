@@ -18,7 +18,6 @@ export const apiClient = (baseUrl: string) => ({
 			const res = await fetch(`${baseUrl}/v1/rooms/${req.id}`, {
 				method: 'GET',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(req)
 			});
 			if (!res.ok) {
 				throw new Error('Network response was not ok');
