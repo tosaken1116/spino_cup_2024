@@ -235,6 +235,7 @@ func generateApiClient(gen *protogen.Plugin, files []*protogen.File) {
 		g.P("  },")
 	}
 	g.P("});")
+	g.P("export type ApiClient = ReturnType<typeof apiClient>")
 }
 
 // HTTP ルールを取得するための関数
