@@ -6,6 +6,7 @@ require (
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/google/wire v0.6.0
 	github.com/labstack/echo/v4 v4.12.0
+	github.com/oklog/ulid v1.3.1
 	github.com/uptrace/bun v1.2.3
 	github.com/uptrace/bun/dialect/mysqldialect v1.2.3
 )
