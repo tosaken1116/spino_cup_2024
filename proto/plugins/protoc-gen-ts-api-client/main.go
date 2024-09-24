@@ -253,7 +253,9 @@ func generateApiClient(gen *protogen.Plugin, files []*protogen.File) {
 				g.P(fmt.Sprintf("			const res = await fetch(`${baseUrl}%s`, {", urlPath))
 				g.P(fmt.Sprintf("				method: '%s',", httpMethod))
 				g.P("				headers: { 'Content-Type': 'application/json' },")
-				g.P("				body: JSON.stringify(req)")
+				if httpMethod != "GET" {
+					g.P("				body: JSON.stringify(req)")
+				}
 				g.P("			});")
 				g.P("			if (!res.ok) {")
 				g.P("				throw new Error('Network response was not ok');")
