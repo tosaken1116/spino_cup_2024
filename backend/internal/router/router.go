@@ -9,10 +9,11 @@ import (
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/handler"
 )
 
-func New(roomHandler handler.RoomHandler) *echo.Echo {
+func New(roomHandler handler.RoomHandler, activeRoomHandler handler.WSHandler) *echo.Echo {
 	e := echo.New()
 	setup(e)
 	registerRoutes(e, roomHandler)
+	e.GET("/rooms/:id/join", activeRoomHandler.Join)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "OK!")
