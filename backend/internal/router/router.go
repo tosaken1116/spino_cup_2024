@@ -21,7 +21,11 @@ func New() *echo.Echo {
 
 func setup(e *echo.Echo) {
 	e.Use(middleware.Recover())
-	e.Use(middleware.Logger())
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Skipper: func(c echo.Context) bool {
+			return c.Request().URL.Path == "/"
+		},
+	}))
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		Skipper: func(c echo.Context) bool {
