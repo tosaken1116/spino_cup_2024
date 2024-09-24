@@ -7,5 +7,16 @@
   },
   "extends": [
     "markuplint:recommended"
-  ]
+  ],
+  "rules": {
+    "invalid-attr": {
+      "options": {
+        "allowAttrs": [
+          "onTouchStart",
+          "onTouchMove",
+          "onTouchEnd"
+        ]
+      }
+    }
+  }
 }

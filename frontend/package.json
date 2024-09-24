@@ -23,6 +23,7 @@
     "start:storybook": "http-server storybook-static --port 6006 -s",
     "screenshot": "test-storybook --url http://127.0.0.1:6006",
     "vrt": "reg-suit run",
+    "generate": "scaffdog generate",
     "bundle:analyze": "vite-bundle-visualizer -t json -o __bundle__/result.json",
     "bundle:compare": "tsx scripts/compareBundle.ts"
   },
@@ -74,6 +75,7 @@
     "reg-notify-github-plugin": "^0.14.4",
     "reg-publish-gcs-plugin": "^0.14.4",
     "reg-suit": "^0.14.4",
+    "scaffdog": "^4.1.0",
     "storybook": "^8.3.0",
     "storycap": "^5.0.1",
     "storycap-testrun": "^0.0.2",
