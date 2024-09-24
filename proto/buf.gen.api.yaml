@@ -14,3 +14,6 @@ plugins:
   - local: ./plugins/protoc-gen-ts-msw-handlers/protoc-gen-ts-msw-handlers
     out: ../frontend/src/generated/mswHandlers
     opt: paths=source_relative
+  - local: ./plugins/protoc-gen-go-echo-router/protoc-gen-go-echo-router
+    out: ../backend/router
+    opt: paths=source_relative
