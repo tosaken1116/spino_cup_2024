@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: 17fd5b84cfae437f8434b60d3b2071e535f038a0
+          image: asia-northeast1-docker.pkg.dev/spino-cup-2024/spino-cup-2024/app:5f4757fadb7955b23e72e16c8e00964ec0e4477e
           imagePullPolicy: IfNotPresent
           resources:
             requests:
