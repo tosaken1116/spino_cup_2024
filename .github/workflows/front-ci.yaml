@@ -10,7 +10,10 @@ on:
 
   pull_request:
     types: [opened, synchronize, reopened]
-
+    paths:
+      - frontend/**
+      - "!*.md"
+      - .github/workflows/front-ci.yaml
   workflow_dispatch:
 
 concurrency:
