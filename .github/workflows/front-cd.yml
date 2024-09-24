@@ -1,0 +1,43 @@
+name: Build and Deploy to Google Cloud Storage
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["frontend CI"]
+    types:
+      - completed
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-upload:
+    if: ${{ github.event.workflow_run.event == 'push' }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: "projects/753884543705/locations/global/workloadIdentityPools/github-pool/providers/github"
+          service_account: "github-actions-user@spino-cup-2024.iam.gserviceaccount.com"
+
+      - name: download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/dist
+      - name: Setup Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: ">= 363.0.0"
+
+      - name: Upload to Google Cloud Storage
+        run: |
+          gsutil -m rsync -R ./dist gs://spino-cup-2024-web-frontend-prod
