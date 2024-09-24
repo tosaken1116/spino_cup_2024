@@ -4,6 +4,6 @@ export type Room = {
   id: string;
   name: string;
   description: string;
-  owner_id: string;
-  member_ids: string;
+  ownerId: string;
+  memberIds: string;
 }
