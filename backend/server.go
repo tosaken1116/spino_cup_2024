@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/app"
@@ -17,6 +18,10 @@ func main() {
 			log.Printf("failed to close server: %v\n", err)
 		}
 	}()
+
+	if err := app.Migrate(context.Background()); err != nil {
+		log.Fatalf("failed to migrate: %v\n", err)
+	}
 
 	if err := app.Start(); err != nil {
 		log.Printf("failed to start server: %v\n", err)
