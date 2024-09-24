@@ -54,4 +54,21 @@ spec:
           ports:
             - containerPort: 8080
               name: api
+        - name: cloud-sql-proxy
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.11.4
+          args:
+            # If connecting from a VPC-native GKE cluster, you can use the
+            # following flag to have the proxy connect over private IP
+            # - "--private-ip"
+            - "--structured-logs"
+            - "--port=3306"
+            - "spino-cup-2024:asia-northeast1:spino-db-instance-prod"
+          securityContext:
+            runAsNonRoot: true
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu:    "1"
+
       restartPolicy: Always
+      serviceAccountName: api-ksa
