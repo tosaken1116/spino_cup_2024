@@ -27,6 +27,26 @@ spec:
         - name: api
           image: asia-northeast1-docker.pkg.dev/spino-cup-2024/spino-docker-prod/app:8cbe505c4015d3f8a7ee5f831397ea64c79a9a29
           imagePullPolicy: IfNotPresent
+          env:
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: api-db-secret
+                key: username
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: api-db-secret
+                key: password
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: api-db-secret
+                key: database
+          - name: DB_HOST
+            value: "localhost"
+          - name: DB_PORT
+            value: "3306"
           resources:
             requests:
               cpu: 100m
