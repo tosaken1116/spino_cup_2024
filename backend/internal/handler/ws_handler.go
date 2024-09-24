@@ -16,7 +16,7 @@ type Base struct {
 	Payload interface{} `json:"payload"`
 }
 
-type ChangeCurrentScreen struct {
+type ChangeCurrentPosition struct {
 	Type    string       `json:"type"`
 	Payload UserPosition `json:"payload"`
 }
@@ -29,17 +29,27 @@ type UserPosition struct {
 	IsClicked bool    `json:"isClicked"`
 }
 
+type ChangeCurrentScreen struct {
+	Type    string     `json:"type"`
+	Payload ScreenSize `json:"payload"`
+}
+
+type ScreenSize struct {
+	Width  int `json:"width"`
+	Height int `json:"height"`
+}
+
 type WSHandler interface {
 	Join(c echo.Context) error
 }
 
 type wsHandler struct {
 	upgrader  *websocket.Upgrader
-	uc        usecase.InRoomUsecase
+	uc        usecase.ActiveRoomUsecase
 	msgSender *ws.MsgSender
 }
 
-func NewWSHandler(uc usecase.InRoomUsecase, msgSender *ws.MsgSender) WSHandler {
+func NewWSHandler(uc usecase.ActiveRoomUsecase, msgSender *ws.MsgSender) WSHandler {
 	return &wsHandler{
 		upgrader: &websocket.Upgrader{
 			CheckOrigin: func(r *http.Request) bool {
@@ -83,7 +93,7 @@ func (w *wsHandler) Join(c echo.Context) error {
 
 		switch msg.Type {
 		case "ChangeCurrentPosition":
-			var msg ChangeCurrentScreen
+			var msg ChangeCurrentPosition
 			json.Unmarshal(p, &msg)
 
 			w.uc.SendPointer(ctx, &usecase.SendPointerReq{
@@ -95,6 +105,11 @@ func (w *wsHandler) Join(c echo.Context) error {
 				IsClicked: msg.Payload.IsClicked,
 			})
 		case "ChangeCurrentScreen":
+			var msg ChangeCurrentScreen
+			json.Unmarshal(p, &msg)
+
+			w.uc.ChangeScreenSize(ctx, roomID, msg.Payload.Height, msg.Payload.Width)
+
 		}
 	}
 

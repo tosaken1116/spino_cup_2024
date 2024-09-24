@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"sync"
 
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/domain/model"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/domain/repository"
@@ -32,19 +33,20 @@ type JoinRoomResp struct {
 	ScreenWidth  float64 `json:"width"`
 }
 
-type InRoomUsecase interface {
+type ActiveRoomUsecase interface {
 	JoinRoom(ctx context.Context, userID, roomID string) error
 	SendPointer(ctx context.Context, req *SendPointerReq) error
+	ChangeScreenSize(ctx context.Context, roomID string, height, width int) error
 }
 
-type inRoomUsecase struct {
+type activeRoomUsecase struct {
 	msgSender service.MessageSender
 	repo      repository.ActiveRoomRepo
 	rRepo     repository.RoomRepository
 }
 
-func NewActiveRoomUsecase(msgSender service.MessageSender, repo repository.ActiveRoomRepo, rRepo repository.RoomRepository) InRoomUsecase {
-	return &inRoomUsecase{
+func NewActiveRoomUsecase(msgSender service.MessageSender, repo repository.ActiveRoomRepo, rRepo repository.RoomRepository) ActiveRoomUsecase {
+	return &activeRoomUsecase{
 		msgSender: msgSender,
 		repo:      repo,
 		rRepo:     rRepo,
@@ -52,7 +54,7 @@ func NewActiveRoomUsecase(msgSender service.MessageSender, repo repository.Activ
 }
 
 // JoinRoom implements InRoomUsecase.
-func (i *inRoomUsecase) JoinRoom(ctx context.Context, userID, roomID string) error {
+func (i *activeRoomUsecase) JoinRoom(ctx context.Context, userID, roomID string) error {
 	room, err := i.repo.Get(ctx, roomID)
 	if err != nil {
 		id, err := model.ParseRoomID(roomID)
@@ -68,12 +70,18 @@ func (i *inRoomUsecase) JoinRoom(ctx context.Context, userID, roomID string) err
 		room = &model.AcitveRoom{
 			Room:    _room,
 			OwnerID: userID,
+			Lock:    sync.RWMutex{},
 		}
 
-		if err := i.repo.Store(ctx, room); err != nil {
-			return err
-		}
 	}
+
+	room.AddUser(userID)
+	if err := i.repo.Store(ctx, room); err != nil {
+		return err
+	}
+
+	room.Lock.RLock()
+	defer room.Lock.RUnlock()
 
 	msg := &JoinRoomResp{
 		UserID:       userID,
@@ -93,11 +101,14 @@ func (i *inRoomUsecase) JoinRoom(ctx context.Context, userID, roomID string) err
 }
 
 // SendPointer implements InRoomUsecase.
-func (i *inRoomUsecase) SendPointer(ctx context.Context, req *SendPointerReq) error {
+func (i *activeRoomUsecase) SendPointer(ctx context.Context, req *SendPointerReq) error {
 	room, err := i.repo.Get(ctx, req.RoomID)
 	if err != nil {
 		return err
 	}
+
+	room.Lock.RLock()
+	defer room.Lock.RUnlock()
 
 	msg := &Pointer{
 		UserID:    req.UserID,
@@ -114,5 +125,34 @@ func (i *inRoomUsecase) SendPointer(ctx context.Context, req *SendPointerReq) er
 		return err
 	}
 
+	return nil
+}
+
+func (i *activeRoomUsecase) ChangeScreenSize(ctx context.Context, roomID string, height, width int) error {
+	room, err := i.repo.Get(ctx, roomID)
+	if err != nil {
+		return err
+	}
+	room.Lock.Lock()
+	defer room.Lock.Unlock()
+
+	room.ScreenHeight = height
+	room.ScreenWidth = width
+	if err := i.repo.Store(ctx, room); err != nil {
+		return err
+	}
+
+	msg := map[string]interface{}{
+		"type": "ChangeCurrentScreen",
+		"payload": map[string]interface{}{
+			"height": height,
+			"width":  width,
+		},
+	}
+	for _, user := range room.Users {
+		if err := i.msgSender.Send(ctx, user, msg); err != nil {
+			return err
+		}
+	}
 	return nil
 }
