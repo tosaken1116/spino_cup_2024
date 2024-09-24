@@ -5,7 +5,7 @@ export type Room = {
   name: string;
   description: string;
   ownerId: string;
-  memberIds: string;
+  memberIds: string[];
 }
 export type UserPosition = {
   x: number;
