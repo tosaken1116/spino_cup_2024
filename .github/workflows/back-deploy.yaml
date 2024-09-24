@@ -62,7 +62,7 @@ jobs:
       - name: Change Docker Image
         uses: mikefarah/yq@v4
         with:
-          cmd: IMAGE=asia-northeast1-docker.pkg.dev/spino-cup-2024/spino-cup-2024/app:${{ github.sha }} yq eval '.spec.template.spec.containers[0].image = env(IMAGE)' -i infra/manifests/api/deployment.yml
+          cmd: IMAGE=asia-northeast1-docker.pkg.dev/spino-cup-2024/spino-docker-prod/app:${{ github.sha }} yq eval '.spec.template.spec.containers[0].image = env(IMAGE)' -i infra/manifests/api/deployment.yml
 
       - name: Create Pull Request
         id: cpr
