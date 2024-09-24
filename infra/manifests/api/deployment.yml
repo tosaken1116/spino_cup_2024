@@ -25,28 +25,28 @@ spec:
     spec:
       containers:
         - name: api
-          image: asia-northeast1-docker.pkg.dev/spino-cup-2024/spino-docker-prod/app:fa8f727d1062f8dc47b5aaf5ad33e8fa4dd3ebfa
+          image: asia-northeast1-docker.pkg.dev/spino-cup-2024/spino-docker-prod/app:bff682adb28e4eb39d4968ce4c55d6209b254133
           imagePullPolicy: IfNotPresent
           env:
-          - name: DB_USER
-            valueFrom:
-              secretKeyRef:
-                name: api-db-secret
-                key: username
-          - name: DB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: api-db-secret
-                key: password
-          - name: DB_NAME
-            valueFrom:
-              secretKeyRef:
-                name: api-db-secret
-                key: database
-          - name: DB_HOST
-            value: "localhost"
-          - name: DB_PORT
-            value: "3306"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: api-db-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: api-db-secret
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: api-db-secret
+                  key: database
+            - name: DB_HOST
+              value: "localhost"
+            - name: DB_PORT
+              value: "3306"
           resources:
             requests:
               cpu: 100m
