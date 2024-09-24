@@ -4,18 +4,18 @@ export type Room = {
   id: string;
   name: string;
   description: string;
-  owner_id: string;
-  member_ids: string;
+  ownerId: string;
+  memberIds: string;
 }
 export type UserPosition = {
   x: number;
   y: number;
   z: number;
   color: string;
-  is_clicked: boolean;
+  isClicked: boolean;
   id: string;
 }
-export type ScreenPosition = {
-  lat: number;
-  lng: number;
+export type ScreenSize = {
+  width: number;
+  height: number;
 }

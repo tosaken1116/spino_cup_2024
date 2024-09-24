@@ -18,5 +18,5 @@ message ChangeCurrentPosition {
 
 message ChangeCurrentScreen {
   string type = 1;
-  room.resources.ScreenPosition  position = 2;
+  room.resources.ScreenSize size = 2;
 }
