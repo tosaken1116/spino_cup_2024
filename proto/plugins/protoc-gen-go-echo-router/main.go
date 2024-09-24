@@ -66,7 +66,7 @@ func generateFile(handlerInfos []HandlerInfo, methodInfos []MethodInfo) {
 	content.WriteString("package router\n\n")
 	content.WriteString("import (\n")
 	content.WriteString(`	"github.com/labstack/echo/v4"` + "\n")
-	content.WriteString(`	"github.com/tosaken1116/spino_cup_2024/backend/handler"` + "\n")
+	content.WriteString(`	"github.com/tosaken1116/spino_cup_2024/backend/internal/handler"` + "\n")
 	content.WriteString(")\n\n")
 	content.WriteString("func registerRoutes(\n")
 	content.WriteString("	e *echo.Echo,\n")
