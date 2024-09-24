@@ -36,7 +36,7 @@ type roomUsecase struct {
 	repo repository.RoomRepository
 }
 
-func NewRoomUseCase(repo repository.RoomRepository) RoomUsecase {
+func NewRoomUsecase(repo repository.RoomRepository) RoomUsecase {
 	return &roomUsecase{repo: repo}
 }
 

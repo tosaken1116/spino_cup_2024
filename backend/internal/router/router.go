@@ -6,11 +6,13 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/tosaken1116/spino_cup_2024/backend/internal/handler"
 )
 
-func New() *echo.Echo {
+func New(roomHandler handler.RoomHandler) *echo.Echo {
 	e := echo.New()
 	setup(e)
+	registerRoutes(e, roomHandler)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "OK!")
