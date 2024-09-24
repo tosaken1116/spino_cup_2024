@@ -10,83 +10,101 @@
 
 // Import Routes
 
-import { Route as rootRoute } from "./routes/__root";
-import { Route as IndexImport } from "./routes/index";
-import { Route as RoomIndexImport } from "./routes/room/index";
+import { Route as rootRoute } from './routes/__root'
+import { Route as IndexImport } from './routes/index'
+import { Route as ScreenIdIndexImport } from './routes/screen/$id/index'
+import { Route as RoomIdIndexImport } from './routes/room/$id/index'
 
 // Create/Update Routes
 
 const IndexRoute = IndexImport.update({
-  path: "/",
+  path: '/',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
-const RoomIndexRoute = RoomIndexImport.update({
-  path: "/room/",
+const ScreenIdIndexRoute = ScreenIdIndexImport.update({
+  path: '/screen/$id/',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
+
+const RoomIdIndexRoute = RoomIdIndexImport.update({
+  path: '/room/$id/',
+  getParentRoute: () => rootRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/room/": {
-      id: "/room/";
-      path: "/room";
-      fullPath: "/room";
-      preLoaderRoute: typeof RoomIndexImport;
-      parentRoute: typeof rootRoute;
-    };
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/room/$id/': {
+      id: '/room/$id/'
+      path: '/room/$id'
+      fullPath: '/room/$id'
+      preLoaderRoute: typeof RoomIdIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/screen/$id/': {
+      id: '/screen/$id/'
+      path: '/screen/$id'
+      fullPath: '/screen/$id'
+      preLoaderRoute: typeof ScreenIdIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/room": typeof RoomIndexRoute;
+  '/': typeof IndexRoute
+  '/room/$id': typeof RoomIdIndexRoute
+  '/screen/$id': typeof ScreenIdIndexRoute
 }
 
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/room": typeof RoomIndexRoute;
+  '/': typeof IndexRoute
+  '/room/$id': typeof RoomIdIndexRoute
+  '/screen/$id': typeof ScreenIdIndexRoute
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute;
-  "/": typeof IndexRoute;
-  "/room/": typeof RoomIndexRoute;
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/room/$id/': typeof RoomIdIndexRoute
+  '/screen/$id/': typeof ScreenIdIndexRoute
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/room";
-  fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/room";
-  id: "__root__" | "/" | "/room/";
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/room/$id' | '/screen/$id'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/room/$id' | '/screen/$id'
+  id: '__root__' | '/' | '/room/$id/' | '/screen/$id/'
+  fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  RoomIndexRoute: typeof RoomIndexRoute;
+  IndexRoute: typeof IndexRoute
+  RoomIdIndexRoute: typeof RoomIdIndexRoute
+  ScreenIdIndexRoute: typeof ScreenIdIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  RoomIndexRoute: RoomIndexRoute,
-};
+  RoomIdIndexRoute: RoomIdIndexRoute,
+  ScreenIdIndexRoute: ScreenIdIndexRoute,
+}
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
 /* prettier-ignore-end */
 
@@ -97,14 +115,18 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/room/"
+        "/room/$id/",
+        "/screen/$id/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/room/": {
-      "filePath": "room/index.tsx"
+    "/room/$id/": {
+      "filePath": "room/$id/index.tsx"
+    },
+    "/screen/$id/": {
+      "filePath": "screen/$id/index.tsx"
     }
   }
 }
