@@ -5,7 +5,7 @@
 	},
 	"files": {
 		"include": ["src/**/*"],
-		"ignore": ["src/routeTree.gen.ts"]
+		"ignore": ["src/routeTree.gen.ts", "src/generated"]
 	},
 	"linter": {
 		"enabled": true,

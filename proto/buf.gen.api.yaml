@@ -9,5 +9,5 @@ inputs:
 
 plugins:
   - local: ./plugins/protoc-gen-ts-api-client/protoc-gen-ts-api-client
-    out: ../frontend/src/generated
+    out: ../frontend/src/generated/apiclient
     opt: paths=source_relative

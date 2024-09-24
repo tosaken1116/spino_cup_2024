@@ -40,7 +40,7 @@ func main() {
 
 func generateSchema(gen *protogen.Plugin, file *protogen.File) {
 	// "domain/[package]/schema.ts" にファイルを生成
-	packageName := strings.Replace(strings.ToLower(strings.Replace(string(*file.Proto.Package),"api.","",-1)), ".rpc", "", -1)
+	packageName := strings.Replace(strings.ToLower(strings.Replace(string(*file.Proto.Package), "api.", "", -1)), ".rpc", "", -1)
 	outputPath := filepath.Join("domain", packageName, "schema.ts")
 	if _, err := os.Stat(outputPath); err == nil {
 		// ファイルが既に存在する場合、生成をスキップ
@@ -121,7 +121,7 @@ func goToTSType(goType string) string {
 }
 func generateDomainModel(gen *protogen.Plugin, file *protogen.File) {
 	// "domain/[package]/model.ts" にファイルを生成
-	packageName := strings.Replace(strings.ToLower(strings.Replace(string(*file.Proto.Package),"api.","",-1)), ".resources", "", -1)
+	packageName := strings.Replace(strings.ToLower(strings.Replace(string(*file.Proto.Package), "api.", "", -1)), ".resources", "", -1)
 	outputPath := filepath.Join("domain", packageName, "model.ts")
 	if _, err := os.Stat(outputPath); err == nil {
 		// ファイルが既に存在する場合、生成をスキップ
@@ -172,7 +172,7 @@ func generateDomainModel(gen *protogen.Plugin, file *protogen.File) {
 
 func generateApiClient(gen *protogen.Plugin, files []*protogen.File) {
 	// "apiclient/index.ts" にファイルを生成
-	outputPath := filepath.Join("apiclient", "index.ts")
+	outputPath := filepath.Join("index.ts")
 	if _, err := os.Stat(outputPath); err == nil {
 		// ファイルが既に存在する場合、生成をスキップ
 		return
@@ -190,7 +190,7 @@ func generateApiClient(gen *protogen.Plugin, files []*protogen.File) {
 			continue // rpc や resource を含むパッケージをスキップ
 		}
 		packageName = strings.Replace(packageName, "api.", "", -1)
-		g.P(fmt.Sprintf("import type * as %sSchema from '../domain/%s/schema';", ToUpperCamelCase(packageName), packageName))
+		g.P(fmt.Sprintf("import type * as %sSchema from './domain/%s/schema';", ToUpperCamelCase(packageName), packageName))
 	}
 	g.P("")
 
