@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package room;
+
+option go_package = "./";
+
+import "google/protobuf/empty.proto";
+
+import "websocket/room/resources/room.proto";
+import "websocket/room/rpc/room.proto";
+import "google/api/annotations.proto";
+
+service RoomService {
+  rpc ChangeUserPosition(google.protobuf.Empty) returns (room.rpc.ChangeUserPosition) {}
+  rpc ChangeCurrentPosition(google.protobuf.Empty) returns (room.rpc.ChangeCurrentPosition) {}
+  rpc ChangeCurrentScreen(google.protobuf.Empty) returns (room.rpc.ChangeCurrentScreen) {}
+}

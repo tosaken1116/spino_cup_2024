@@ -1,0 +1,16 @@
+version: v2
+clean: true
+managed:
+  enabled: true
+inputs:
+  - directory: proto
+    paths:
+      - proto/api
+  - directory: proto
+    paths:
+      - proto/websocket
+
+plugins:
+  - local: ./plugins/protoc-gen-ts-ws-client/protoc-gen-ts-ws-client
+    out: ../frontend/src/generated/wsClient
+    opt: paths=source_relative

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "./";
+
+package room.rpc;
+
+import "websocket/room/resources/room.proto";
+
+message ChangeUserPosition {
+  string type = 1;
+  repeated room.resources.UserPosition  userPositions = 2;
+}
+
+message ChangeCurrentPosition {
+  string type = 1;
+  room.resources.UserPosition  position = 2;
+}
+
+message ChangeCurrentScreen {
+  string type = 1;
+  room.resources.ScreenPosition  position = 2;
+}

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option go_package = "./";
+
+package api.room.resources;
+
+message Room {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string owner_id = 4;
+  repeated string member_ids = 5;
+}

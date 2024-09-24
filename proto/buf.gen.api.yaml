@@ -1,0 +1,13 @@
+version: v2
+clean: true
+managed:
+  enabled: true
+inputs:
+  - directory: proto
+    paths:
+      - proto/api
+
+plugins:
+  - local: ./plugins/protoc-gen-ts-api-client/protoc-gen-ts-api-client
+    out: ../frontend/src/generated/apiclient
+    opt: paths=source_relative
