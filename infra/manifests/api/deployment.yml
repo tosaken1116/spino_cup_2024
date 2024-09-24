@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: asia-northeast1-docker.pkg.dev/spino-cup-2024/spino-docker-prod/app:8cbe505c4015d3f8a7ee5f831397ea64c79a9a29
+          image: asia-northeast1-docker.pkg.dev/spino-cup-2024/spino-docker-prod/app:fa8f727d1062f8dc47b5aaf5ad33e8fa4dd3ebfa
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -68,7 +68,6 @@ spec:
           resources:
             requests:
               memory: "2Gi"
-              cpu:    "1"
-
+              cpu: "1"
       restartPolicy: Always
       serviceAccountName: api-ksa
