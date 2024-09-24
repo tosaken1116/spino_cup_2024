@@ -1,4 +1,4 @@
-name: CI
+name: frontend CI
 on:
   push:
     branches:
