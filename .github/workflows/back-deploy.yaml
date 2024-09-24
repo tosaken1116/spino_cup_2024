@@ -1,0 +1,55 @@
+name: Backend Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - backend/**/*.go
+      - '!*_test.go'
+      - '!mock_*.go'
+      - 'backend/docker/app/Dockerfile'
+      - 'go.mod'
+      - 'go.sum'
+      - .dockerignore
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: 'projects/753884543705/locations/global/workloadIdentityPools/github-pool/providers/github'
+          service_account: 'github-actions-user@spino-cup-2024.iam.gserviceaccount.com'
+
+      - name: Setup Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build, tag, and push image to Artifact Registry
+        id: build-image
+        uses: docker/build-push-action@v5
+        with:
+          context: backend
+          file: backend/docker/app/Dockerfile
+          push: true
+          tags: asia-northeast1-docker.pkg.dev/spino-cup-2024/spino-docker-prod/app:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
