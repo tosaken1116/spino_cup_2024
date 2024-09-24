@@ -1,0 +1,1 @@
+export { useRoomRepository } from "./repository";
