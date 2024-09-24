@@ -49,3 +49,4 @@ export const apiClient = (baseUrl: string) => ({
 		},
   },
 });
+export type ApiClient = ReturnType<typeof apiClient>
