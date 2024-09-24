@@ -6,27 +6,46 @@ services:
       context: .
       dockerfile: docker/app/Dockerfile
     ports:
-      - 1323:1323
+      - 8080:8080
     volumes:
-      - ./:/app
+      - .:/app
+    develop:
+      watch:
+      - action: rebuild
+        path: .
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     env_file: .env
 
   db:
-    container_name: spino-cup-backend-db
-    build:
-      context: .
-      dockerfile: docker/db/Dockerfile
-    ports:
-      - 5432:5432
+    image: mysql:8.0
+    container_name: spino-cup-db
+    env_file:
+      - .env
+    hostname: ${DB_HOST:?err}
+    expose:
+      - ${DB_PORT:?err}
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: db
+      MYSQL_DATABASE: ${DB_NAME:?err}
+      MYSQL_USER: ${DB_USER:?err}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?err}
+      MYSQL_RANDOM_ROOT_PASSWORD: yes
+      MYSQL_AUTHENTICATION_PLUGIN: caching_sha2_password
     volumes:
-      - db-store:/var/lib/postgresql/data
-    restart: always
+      - db-store:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+        ]
+      interval: 1s
+      timeout: 3s
+      retries: 30
 
 volumes:
   db-store:
