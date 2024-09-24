@@ -11,3 +11,6 @@ plugins:
   - local: ./plugins/protoc-gen-ts-api-client/protoc-gen-ts-api-client
     out: ../frontend/src/generated/apiclient
     opt: paths=source_relative
+  - local: ./plugins/protoc-gen-ts-msw-handlers/protoc-gen-ts-msw-handlers
+    out: ../frontend/src/generated/mswHandlers
+    opt: paths=source_relative
