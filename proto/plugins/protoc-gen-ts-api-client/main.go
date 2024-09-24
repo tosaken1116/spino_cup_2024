@@ -78,11 +78,26 @@ func generateSchema(gen *protogen.Plugin, file *protogen.File) {
 		for _, field := range message.Fields {
 			if field.Message != nil {
 				// メッセージ型のフィールドの場合、型名を出力
-				g.P(fmt.Sprintf("  %s: %s;", field.Desc.Name(), field.Message.GoIdent.GoName))
+				tsType := field.Message.GoIdent.GoName
+				arrayContext := func() string {
+					if field.Desc.IsList() {
+						return tsType + "[]"
+					}
+					return tsType
+				}()
+
+				g.P(fmt.Sprintf("  %s: %s;", field.Desc.Name(), arrayContext))
 			} else {
 				// プリミティブ型の場合
 				tsType := goToTSType(field.Desc.Kind().String())
-				g.P(fmt.Sprintf("  %s: %s;", field.Desc.Name(), tsType))
+				arrayContext := func() string {
+					if field.Desc.IsList() {
+						return tsType + "[]"
+					}
+					return tsType
+				}()
+
+				g.P(fmt.Sprintf("  %s: %s;", field.Desc.Name(), arrayContext))
 			}
 		}
 		g.P("};")
@@ -159,11 +174,26 @@ func generateDomainModel(gen *protogen.Plugin, file *protogen.File) {
 		for _, field := range message.Fields {
 			if field.Message != nil {
 				// メッセージ型のフィールドの場合、型名を出力
-				g.P(fmt.Sprintf("  %s: %s;", field.Desc.Name(), field.Message.GoIdent.GoName))
+				tsType := field.Message.GoIdent.GoName
+				arrayContext := func() string {
+					if field.Desc.IsList() {
+						return tsType + "[]"
+					}
+					return tsType
+				}()
+
+				g.P(fmt.Sprintf("  %s: %s;", field.Desc.Name(), arrayContext))
 			} else {
 				// プリミティブ型の場合
 				tsType := goToTSType(field.Desc.Kind().String())
-				g.P(fmt.Sprintf("  %s: %s;", field.Desc.Name(), tsType))
+				arrayContext := func() string {
+					if field.Desc.IsList() {
+						return tsType + "[]"
+					}
+					return tsType
+				}()
+
+				g.P(fmt.Sprintf("  %s: %s;", field.Desc.Name(), arrayContext))
 			}
 		}
 		g.P("}")
