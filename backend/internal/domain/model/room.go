@@ -9,6 +9,7 @@ import (
 )
 
 var ErrRoomNotFound = errors.New("room not found")
+var ErrRoomIDInvalid = errors.New("room id is invalid")
 
 type RoomID ulid.ULID
 type Room struct {
@@ -29,7 +30,7 @@ func NewRoomID() (RoomID, error) {
 func ParseRoomID(s string) (RoomID, error) {
 	id, err := ulid.Parse(s)
 	if err != nil {
-		return RoomID{}, err
+		return RoomID{}, ErrRoomIDInvalid
 	}
 	return RoomID(id), nil
 }
