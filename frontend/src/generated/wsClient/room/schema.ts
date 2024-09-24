@@ -4,7 +4,7 @@
 import { UserPosition, ScreenSize } from './model';
 export type ChangeUserPosition = {
   type: string;
-  userPositions: UserPosition;
+  userPositions: UserPosition[];
 };
 export type ChangeCurrentPosition = {
   type: string;
