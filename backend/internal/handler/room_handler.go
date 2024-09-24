@@ -6,7 +6,6 @@ type RoomHandler interface {
 	CreateRoom(c echo.Context) error
 	GetRoom(c echo.Context) error
 	UpdateRoom(c echo.Context) error
-	JoinRoom(c echo.Context) error
 }
 
 type roomHandler struct {
@@ -23,11 +22,6 @@ func (r *roomHandler) CreateRoom(c echo.Context) error {
 
 // GetRoom implements RoomHandler.
 func (r *roomHandler) GetRoom(c echo.Context) error {
-	panic("unimplemented")
-}
-
-// JoinRoom implements RoomHandler.
-func (r *roomHandler) JoinRoom(c echo.Context) error {
 	panic("unimplemented")
 }
 

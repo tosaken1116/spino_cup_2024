@@ -12,5 +12,4 @@ func registerRoutes(
 	e.POST("/v1/rooms", roomHandler.CreateRoom)
 	e.GET("/v1/rooms/:id", roomHandler.GetRoom)
 	e.PUT("/v1/rooms/:id", roomHandler.UpdateRoom)
-	e.POST("/v1/rooms/:id/join", roomHandler.JoinRoom)
 }
