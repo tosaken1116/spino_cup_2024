@@ -79,6 +79,9 @@ func generateFile(handlerInfos []HandlerInfo, methodInfos []MethodInfo) {
 	content.WriteString(") {\n")
 
 	for _, methodInfo := range methodInfos {
+		if methodInfo.MethodName == "JoinRoom" {
+			continue
+		}
 		route := fmt.Sprintf(`	e.%s("%s", %s.%s)`, methodInfo.HTTPMethod, methodInfo.Path, methodInfo.HandlerName, methodInfo.MethodName)
 		content.WriteString(route + "\n")
 	}

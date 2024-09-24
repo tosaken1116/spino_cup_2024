@@ -17,3 +17,6 @@ plugins:
   - local: ./plugins/protoc-gen-go-echo-router/protoc-gen-go-echo-router
     out: ../backend/router
     opt: paths=source_relative
+  - protoc_builtin: go
+    out: ../backend/internal/handler/schema
+    opt: paths=source_relative

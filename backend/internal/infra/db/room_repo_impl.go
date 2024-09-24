@@ -27,7 +27,7 @@ type roomRepoImpl struct {
 	db *database.DB
 }
 
-func NewRoomRepositroy(db *database.DB) repository.RoomRepository {
+func NewRoomRepository(db *database.DB) repository.RoomRepository {
 	return &roomRepoImpl{db: db}
 }
 

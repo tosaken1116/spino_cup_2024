@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "./";
+option go_package = "github.com/tosaken1116/spino_cup_2024/backend/internal/handler/schema/api/room/resources";
 
 package api.room.resources;
 

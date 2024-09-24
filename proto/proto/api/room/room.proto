@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package api.room;
 
-option go_package = "./";
+option go_package = "github.com/tosaken1116/spino_cup_2024/backend/internal/handler/schema/api/room";
 
 import "api/room/resources/room.proto";
 import "api/room/rpc/room.proto";
