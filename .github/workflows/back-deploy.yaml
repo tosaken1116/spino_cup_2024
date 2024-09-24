@@ -72,7 +72,7 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
-          branch: release/${{ github.sha }}
+          branch: create-pull-request/release/${{ github.sha }}
           base: main
           delete-branch: true
           title: Update Container Image
