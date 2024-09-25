@@ -2,6 +2,7 @@ package router
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -38,7 +39,7 @@ func setup(e *echo.Echo) {
 			return c.Request().URL.Path == "/"
 		},
 		AllowMethods: []string{"GET", "POST", "PUT", "OPTIONS"},
-		AllowOrigins: []string{"http://localhost:5173"},
+		AllowOrigins: []string{"http://localhost:5173", os.Getenv("ALLOW_ORIGIN")},
 		AllowHeaders: []string{"Origin", "Content-Type", "Authorization"},
 	}))
 }
