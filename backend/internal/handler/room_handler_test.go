@@ -278,34 +278,26 @@ func TestRoomHandler_UpdateRoom(t *testing.T) {
 		wantStatus int
 		wantBody   string
 	}{
-		// {
-		// 	name:   "成功: ルームが更新される",
-		// 	roomID: "01AN4Z07BY79KA1307SR9X4MV3",
-		// 	arg: &RoomRequest{
-		// 		Name:        "Updated Room",
-		// 		Description: "This is an updated room",
-		// 	},
-		// 	fn: func(mockUsecase *mu.MockRoomUsecase) {
-		// 		mockUsecase.
-		// 			EXPECT().
-		// 			GetRoom(gomock.Any(), "01AN4Z07BY79KA1307SR9X4MV3").
-		// 			Return(&usecase.RoomDTO{
-		// 				ID:          "01AN4Z07BY79KA1307SR9X4MV3",
-		// 				Name:        "Test Room",
-		// 				Description: "This is a test room",
-		// 			}, nil)
-		// 		mockUsecase.
-		// 			EXPECT().
-		// 			UpdateRoom(gomock.Any(), gomock.Any()).
-		// 			Return(&usecase.RoomDTO{
-		// 				ID:          "01AN4Z07BY79KA1307SR9X4MV3",
-		// 				Name:        "Updated Room",
-		// 				Description: "This is an updated room",
-		// 			}, nil)
-		// 	},
-		// 	wantStatus: http.StatusOK,
-		// 	wantBody:   "{\"room\":{\"id\":\"01AN4Z07BY79KA1307SR9X4MV3\",\"name\":\"Updated Room\",\"description\":\"This is an updated room\"}}\n",
-		// },
+		{
+			name:   "成功: ルームが更新される",
+			roomID: "01AN4Z07BY79KA1307SR9X4MV3",
+			arg: &RoomRequest{
+				Name:        "Updated Room",
+				Description: "This is an updated room",
+			},
+			fn: func(mockUsecase *mu.MockRoomUsecase) {
+				mockUsecase.
+					EXPECT().
+					UpdateRoom(gomock.Any(), gomock.Any()).
+					Return(&usecase.RoomDTO{
+						ID:          "01AN4Z07BY79KA1307SR9X4MV3",
+						Name:        "Updated Room",
+						Description: "This is an updated room",
+					}, nil)
+			},
+			wantStatus: http.StatusOK,
+			wantBody:   "{\"room\":{\"id\":\"01AN4Z07BY79KA1307SR9X4MV3\",\"name\":\"Updated Room\",\"description\":\"This is an updated room\"}}\n",
+		},
 		{
 			name:   "失敗: ルームIDが不正",
 			roomID: "1",
@@ -316,7 +308,7 @@ func TestRoomHandler_UpdateRoom(t *testing.T) {
 			fn: func(mockUsecase *mu.MockRoomUsecase) {
 				mockUsecase.
 					EXPECT().
-					GetRoom(gomock.Any(), "1").
+					UpdateRoom(gomock.Any(), gomock.Any()).
 					Return(nil, model.ErrRoomIDInvalid)
 			},
 			wantStatus: http.StatusNotFound,
@@ -332,7 +324,7 @@ func TestRoomHandler_UpdateRoom(t *testing.T) {
 			fn: func(mockUsecase *mu.MockRoomUsecase) {
 				mockUsecase.
 					EXPECT().
-					GetRoom(gomock.Any(), "01AN4Z07BY79KA1307SR9X4MV3").
+					UpdateRoom(gomock.Any(), gomock.Any()).
 					Return(nil, errors.New("internal server error"))
 			},
 			wantStatus: http.StatusInternalServerError,
@@ -356,7 +348,7 @@ func TestRoomHandler_UpdateRoom(t *testing.T) {
 			c.SetParamValues(tt.roomID)
 
 			handler := NewRoomHandler(mockUsecase)
-			err := handler.GetRoom(c)
+			err := handler.UpdateRoom(c)
 			if err != nil {
 				e.HTTPErrorHandler(err, c)
 			}
