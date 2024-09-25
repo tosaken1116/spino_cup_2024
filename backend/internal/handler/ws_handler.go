@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -78,7 +79,10 @@ func (w *wsHandler) Join(c echo.Context) error {
 	defer w.msgSender.Unregister(userID)
 
 	ctx := c.Request().Context()
-	w.uc.JoinRoom(ctx, userID, roomID)
+	if err := w.uc.JoinRoom(ctx, userID, roomID); err != nil {
+		fmt.Printf("err: %v\n", err)
+		return nil
+	}
 
 	for {
 		_, p, err := ws.ReadMessage()
