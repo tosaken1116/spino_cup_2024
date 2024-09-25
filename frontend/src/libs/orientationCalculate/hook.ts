@@ -82,6 +82,7 @@ export const useOrientationCalculate = ({
 			.catch(console.error);
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		// @ts-ignore
 		if (typeof DeviceMotionEvent.requestPermission === "function") {
@@ -106,7 +107,7 @@ export const useOrientationCalculate = ({
 			// @ts-ignore
 			window.removeEventListener("deviceorientation", setCurrentPointer);
 		};
-	}, [setCurrentPointer]);
+	}, []);
 	return {
 		leftTopOrientation,
 		rightBottomOrientation,
