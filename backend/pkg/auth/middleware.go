@@ -37,7 +37,9 @@ func (a *AuthClient) Middleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-var authKey = struct{}{}
+type keyType struct{}
+
+var authKey = keyType{}
 
 func SetUserID(c context.Context, uid string) context.Context {
 	return context.WithValue(c, authKey, uid)
