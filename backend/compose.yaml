@@ -11,6 +11,8 @@ services:
       watch:
       - action: rebuild
         path: .
+    volumes:
+      - ./service-account-file.json:/tmp/service-account-file.json
     depends_on:
       db:
         condition: service_healthy
