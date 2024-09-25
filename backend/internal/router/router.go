@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/handler"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho" //nolint
 )
 
 func New(roomHandler handler.RoomHandler, activeRoomHandler handler.WSHandler) *echo.Echo {
