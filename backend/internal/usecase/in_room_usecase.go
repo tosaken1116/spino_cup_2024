@@ -18,8 +18,14 @@ type SendPointerReq struct {
 	IsClicked bool
 }
 
+type User struct {
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	AvatarURL string `json:"avatarUrl"`
+}
+
 type Pointer struct {
-	UserID    string  `json:"id"`
+	User      *User   `json:"user"`
 	IsClicked bool    `json:"isClicked"`
 	X         float64 `json:"x"`
 	Y         float64 `json:"y"`
@@ -43,9 +49,15 @@ type activeRoomUsecase struct {
 	msgSender service.MessageSender
 	repo      repository.ActiveRoomRepo
 	rRepo     repository.RoomRepository
+	uRepo     repository.UserRepository
 }
 
-func NewActiveRoomUsecase(msgSender service.MessageSender, repo repository.ActiveRoomRepo, rRepo repository.RoomRepository) ActiveRoomUsecase {
+func NewActiveRoomUsecase(
+	msgSender service.MessageSender,
+	repo repository.ActiveRoomRepo,
+	rRepo repository.RoomRepository,
+	uRepo repository.UserRepository,
+) ActiveRoomUsecase {
 	return &activeRoomUsecase{
 		msgSender: msgSender,
 		repo:      repo,
@@ -72,10 +84,14 @@ func (i *activeRoomUsecase) JoinRoom(ctx context.Context, userID, roomID string)
 			OwnerID: userID,
 			Lock:    sync.RWMutex{},
 		}
-
 	}
 
-	room.AddUser(userID)
+	user, err := i.uRepo.GetUser(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	room.AddUser(user)
 	if err := i.repo.Store(ctx, room); err != nil {
 		return err
 	}
@@ -84,7 +100,7 @@ func (i *activeRoomUsecase) JoinRoom(ctx context.Context, userID, roomID string)
 	defer room.Lock.RUnlock()
 
 	msg := &JoinRoomResp{
-		UserID:       userID,
+		UserID:       user.ID,
 		OwnerID:      room.OwnerID,
 		ScreenHeight: float64(room.ScreenHeight),
 		ScreenWidth:  float64(room.ScreenWidth),
@@ -110,8 +126,13 @@ func (i *activeRoomUsecase) SendPointer(ctx context.Context, req *SendPointerReq
 	room.Lock.RLock()
 	defer room.Lock.RUnlock()
 
+	user, err := i.uRepo.GetUser(ctx, req.UserID)
+	if err != nil {
+		return err
+	}
+
 	msg := &Pointer{
-		UserID:    req.UserID,
+		User:      &User{ID: user.ID, Name: user.Name, AvatarURL: user.AvatarURL},
 		IsClicked: req.IsClicked,
 		X:         req.X,
 		Y:         req.Y,
@@ -150,9 +171,41 @@ func (i *activeRoomUsecase) ChangeScreenSize(ctx context.Context, roomID string,
 		},
 	}
 	for _, user := range room.Users {
-		if err := i.msgSender.Send(ctx, user, msg); err != nil {
+		if err := i.msgSender.Send(ctx, user.ID, msg); err != nil {
 			return err
 		}
 	}
+	return nil
+}
+
+func (i *activeRoomUsecase) LeaveRoom(ctx context.Context, roomID, userID string) error {
+	room, err := i.repo.Get(ctx, roomID)
+	if err != nil {
+		return err
+	}
+
+	room.Lock.Lock()
+	defer room.Lock.Unlock()
+
+	for i, user := range room.Users {
+		if user.ID == userID {
+			room.Users = append(room.Users[:i], room.Users[i+1:]...)
+			break
+		}
+	}
+	if err := i.repo.Store(ctx, room); err != nil {
+		return err
+	}
+
+	msg := map[string]interface{}{
+		"type": "LeaveRoom",
+		"payload": map[string]interface{}{
+			"userId": userID,
+		},
+	}
+	if err := i.msgSender.Send(ctx, room.OwnerID, msg); err != nil {
+		return err
+	}
+
 	return nil
 }
