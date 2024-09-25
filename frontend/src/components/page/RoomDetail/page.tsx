@@ -10,7 +10,6 @@ export const RoomDetailPage = (props: Props) => {
 	if (actions === null) {
 		return <p>...connecting</p>;
 	}
-	console.log(actions.type);
 	if (actions.type === "user") {
 		return (
 			<div>
