@@ -4,11 +4,7 @@ import type { UserAction } from "../../../../libs/wsClients";
 type Props = Omit<UserAction, "type">;
 
 export const UserController = ({
-	isClicked,
-	color,
 	handleChangePointerColor,
-	handleChangePointerPosition,
-	handleClickPointer,
 }: Props) => {
 	return (
 		<div>

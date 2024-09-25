@@ -7,11 +7,11 @@ export const ScreenController = ({ handleChangeScreen }: Props) => {
 	return (
 		<div>
 			<form
-				ref={ref}
-				onSubmit={(e) => {
+        ref={ref}
+				onSubmit={() => {
 					handleChangeScreen({
 						width: Number(ref.current?.elements),
-						height: Number(ref.current?.elements[1].value),
+						height: Number(ref.current?.elements),
 					});
 				}}
 			>
