@@ -29,6 +29,7 @@ func NewRoomDTOFromModel(m *model.Room) *RoomDTO {
 type RoomUsecase interface {
 	CreateRoom(ctx context.Context, dto *RoomDTO) (*RoomDTO, error)
 	GetRoom(ctx context.Context, id string) (*RoomDTO, error)
+	ListRoom(ctx context.Context) ([]*RoomDTO, error)
 	UpdateRoom(ctx context.Context, dto *RoomDTO) (*RoomDTO, error)
 }
 
@@ -67,6 +68,21 @@ func (r *roomUsecase) GetRoom(ctx context.Context, rawid string) (*RoomDTO, erro
 	}
 
 	return NewRoomDTOFromModel(room), nil
+}
+
+// ListRoom implements RoomUsecase.
+func (r *roomUsecase) ListRoom(ctx context.Context) ([]*RoomDTO, error) {
+	rooms, err := r.repo.ListRoom(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	roomDTOs := make([]*RoomDTO, 0, len(rooms))
+	for _, room := range rooms {
+		roomDTOs = append(roomDTOs, NewRoomDTOFromModel(room))
+	}
+
+	return roomDTOs, nil
 }
 
 // UpdateRoom implements RoomUsecase.
