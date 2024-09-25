@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ScreenSize } from "../../generated/wsClient/room/model";
 import { calculateScreenPosition } from "../calculateScreenPosition";
 
@@ -68,12 +68,20 @@ export const useOrientationCalculate = ({
 			.then((permissionState) => {
 				if (permissionState === "granted") {
 					setPermissionGranted(true);
-					// @ts-ignore
-					window.addEventListener("deviceorientation", setCurrentPointer);
 				}
 			})
 			.catch(console.error);
 	};
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		// @ts-ignore
+		window.addEventListener("deviceorientation", setCurrentPointer);
+		return () => {
+			// @ts-ignore
+			window.removeEventListener("deviceorientation", setCurrentPointer);
+		};
+	}, [permissionGranted, leftTopOrientation, rightBottomOrientation]);
 
 	return {
 		leftTopOrientation,
