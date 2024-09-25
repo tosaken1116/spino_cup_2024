@@ -19,6 +19,7 @@ export const ChangePenSizeSlider: FC<Props> = ({
 						min={1}
 						max={20}
 						value={value}
+						className="w-full h-0  rounded-lg appearance-none cursor-pointer"
 						onChange={(e) => {
 							setValue(Number(e.target.value));
 							onChange(Number(e.target.value));

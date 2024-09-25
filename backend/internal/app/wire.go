@@ -12,6 +12,7 @@ import (
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/infra/ws"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/router"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/usecase"
+	"github.com/tosaken1116/spino_cup_2024/backend/pkg/auth"
 	"github.com/tosaken1116/spino_cup_2024/backend/pkg/database"
 )
 
@@ -21,6 +22,12 @@ func New() (*container.App, error) {
 		config.NewDBConfig,
 		convertDBConfig,
 		database.New,
+
+		// User
+		auth.New,
+		db.NewUserRepository,
+		usecase.NewUserUsecase,
+		handler.NewUserHandler,
 
 		// Room
 		db.NewRoomRepository,

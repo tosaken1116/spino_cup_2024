@@ -7,14 +7,23 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/handler"
+	"github.com/tosaken1116/spino_cup_2024/backend/pkg/auth"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho" //nolint
 )
 
-func New(roomHandler handler.RoomHandler, activeRoomHandler handler.WSHandler) *echo.Echo {
+func New(
+	roomHandler handler.RoomHandler,
+	activeRoomHandler handler.WSHandler,
+	userHandler handler.UserHandler,
+	authClient *auth.AuthClient,
+) *echo.Echo {
 	e := echo.New()
 	setup(e)
-	registerRoutes(e, roomHandler)
+	// registerRoutes(e, roomHandler, authClient)
+	registerRoutes(e, roomHandler) // TODO: フロントの認証ができたら
 	e.GET("/rooms/:id/join", activeRoomHandler.Join)
+
+	e.POST("/v1/signup", userHandler.SignUp)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "OK!")
