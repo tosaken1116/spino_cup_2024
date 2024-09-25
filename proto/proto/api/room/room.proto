@@ -7,6 +7,7 @@ option go_package = "github.com/tosaken1116/spino_cup_2024/backend/internal/hand
 import "api/room/resources/room.proto";
 import "api/room/rpc/room.proto";
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 
 service RoomService {
   rpc CreateRoom(api.room.rpc.CreateRoomRequest) returns (api.room.rpc.CreateRoomResponse) {
@@ -30,6 +31,12 @@ service RoomService {
   rpc JoinRoom(api.room.rpc.JoinRoomRequest) returns (api.room.rpc.JoinRoomResponse) {
     option (google.api.http) = {
       post: "/v1/rooms/{id}/join"
+      body: "*"
+    };
+  }
+  rpc ListRoom(google.protobuf.Empty) returns (api.room.rpc.ListRoomResponse) {
+    option (google.api.http) = {
+      get: "/v1/rooms"
       body: "*"
     };
   }

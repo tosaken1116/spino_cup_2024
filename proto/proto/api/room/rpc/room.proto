@@ -40,3 +40,8 @@ message JoinRoomRequest {
 message JoinRoomResponse {
   room.resources.Room room = 1;
 }
+
+message ListRoomResponse {
+  repeated room.resources.Room rooms = 1;
+  int32 total = 2;
+}

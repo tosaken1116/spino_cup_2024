@@ -247,9 +247,12 @@ func generateApiClient(gen *protogen.Plugin, files []*protogen.File) {
 				reqType := fmt.Sprintf("%sSchema.%s", ToUpperCamelCase(packageName), method.Input.GoIdent.GoName)
 				respType := fmt.Sprintf("%sSchema.%s", ToUpperCamelCase(packageName), method.Output.GoIdent.GoName)
 				methodName := strings.ToLower(string(method.GoName[0])) + method.GoName[1:]
-
 				// 各APIメソッドの生成
-				g.P(fmt.Sprintf("		%s: async (req: %s): Promise<%s> => {", methodName, reqType, respType))
+				if (method.Input.GoIdent.GoName == "Empty") {
+					g.P(fmt.Sprintf("		%s: async (): Promise<%s> => {", methodName, respType))
+				}else{
+					g.P(fmt.Sprintf("		%s: async (req: %s): Promise<%s> => {", methodName, reqType, respType))
+				}
 				g.P(fmt.Sprintf("			const res = await fetch(`${baseUrl}%s`, {", urlPath))
 				g.P(fmt.Sprintf("				method: '%s',", httpMethod))
 				g.P("				headers: { 'Content-Type': 'application/json' },")
