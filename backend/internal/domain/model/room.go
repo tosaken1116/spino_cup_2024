@@ -10,6 +10,7 @@ import (
 
 var ErrRoomNotFound = errors.New("room not found")
 var ErrRoomIDInvalid = errors.New("room id is invalid")
+var ErrRoomNameRequired = errors.New("room name is required")
 
 type RoomID ulid.ULID
 type Room struct {

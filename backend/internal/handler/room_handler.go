@@ -10,6 +10,20 @@ import (
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/usecase"
 )
 
+type RoomResponse struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+func NewRoomResponseFromDTO(dto *usecase.RoomDTO) *RoomResponse {
+	return &RoomResponse{
+		ID:          dto.ID,
+		Name:        dto.Name,
+		Description: dto.Description,
+	}
+}
+
 type RoomHandler interface {
 	CreateRoom(c echo.Context) error
 	GetRoom(c echo.Context) error
@@ -32,41 +46,55 @@ func (r *roomHandler) CreateRoom(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err).SetInternal(err)
 	}
 
-	room, err := r.roomUsecase.CreateRoom(c.Request().Context(), &usecase.RoomDTO{
+	roomDTO, err := r.roomUsecase.CreateRoom(c.Request().Context(), &usecase.RoomDTO{
 		Name:        req.Name,
 		Description: req.Description,
 	})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err).SetInternal(err)
+		switch {
+		case errors.Is(err, model.ErrRoomNameRequired):
+			return echo.NewHTTPError(http.StatusBadRequest, err).SetInternal(err)
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
+		}
 	}
 
-	return c.JSON(http.StatusOK, room)
+	roomResponse := NewRoomResponseFromDTO(roomDTO)
+
+	return c.JSON(http.StatusOK, echo.Map{"room": roomResponse})
 }
 
 // GetRoom implements RoomHandler.
 func (r *roomHandler) GetRoom(c echo.Context) error {
 	id := c.Param("id")
-	room, err := r.roomUsecase.GetRoom(c.Request().Context(), id)
+	roomDTO, err := r.roomUsecase.GetRoom(c.Request().Context(), id)
 	if err != nil {
 		switch {
 		case errors.Is(err, model.ErrRoomNotFound), errors.Is(err, model.ErrRoomIDInvalid):
 			return echo.NewHTTPError(http.StatusNotFound, err).SetInternal(err)
 		default:
-			return echo.NewHTTPError(http.StatusInternalServerError, err).SetInternal(err)
+			return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
 		}
 	}
 
-	return c.JSON(http.StatusOK, room)
+	roomResponse := NewRoomResponseFromDTO(roomDTO)
+
+	return c.JSON(http.StatusOK, echo.Map{"room": roomResponse})
 }
 
 // ListRoom implements RoomHandler.
 func (r *roomHandler) ListRoom(c echo.Context) error {
 	rooms, err := r.roomUsecase.ListRoom(c.Request().Context())
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err).SetInternal(err)
+		return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
 	}
 
-	return c.JSON(http.StatusOK, rooms)
+	roomResponses := make([]*RoomResponse, len(rooms))
+	for i, room := range rooms {
+		roomResponses[i] = NewRoomResponseFromDTO(room)
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{"rooms": roomResponses})
 }
 
 // UpdateRoom implements RoomHandler.
@@ -77,7 +105,7 @@ func (r *roomHandler) UpdateRoom(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err).SetInternal(err)
 	}
 
-	room, err := r.roomUsecase.UpdateRoom(c.Request().Context(), &usecase.RoomDTO{
+	roomDTO, err := r.roomUsecase.UpdateRoom(c.Request().Context(), &usecase.RoomDTO{
 		ID:          id,
 		Name:        req.Name,
 		Description: req.Description,
@@ -87,9 +115,11 @@ func (r *roomHandler) UpdateRoom(c echo.Context) error {
 		case errors.Is(err, model.ErrRoomNotFound), errors.Is(err, model.ErrRoomIDInvalid):
 			return echo.NewHTTPError(http.StatusNotFound, err).SetInternal(err)
 		default:
-			return echo.NewHTTPError(http.StatusInternalServerError, err).SetInternal(err)
+			return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
 		}
 	}
 
-	return c.JSON(http.StatusOK, room)
+	roomResponse := NewRoomResponseFromDTO(roomDTO)
+
+	return c.JSON(http.StatusOK, echo.Map{"room": roomResponse})
 }
