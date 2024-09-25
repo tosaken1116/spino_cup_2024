@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRoomWSClient } from "../../generated/wsClient/room";
 import type {
 	ScreenSize,
@@ -66,28 +66,37 @@ export const useRoomUserWSClient = (
 	const handleChangePointerPosition = useCallback(
 		(payload: Omit<UserPosition, "id" | "color" | "isClicked">) => {
 			if (!userId) return;
-			handleChangeCurrentPosition({ id: userId, ...position, ...payload });
 			setPosition({ ...position, ...payload });
 		},
-		[handleChangeCurrentPosition, userId, position],
+		[userId, position],
 	);
 	const handleChangePointerColor = useCallback(
 		(color: string) => {
 			if (!userId) return;
-			handleChangeCurrentPosition({ id: userId, ...position, color });
 			setPosition({ ...position, color });
 		},
-		[handleChangeCurrentPosition, userId, position],
+		[userId, position],
 	);
 
 	const handleClickPointer = useCallback(
 		(isClicked: boolean) => {
 			if (!userId) return;
-			handleChangeCurrentPosition({ id: userId, ...position, isClicked });
 			setPosition({ ...position, isClicked });
 		},
-		[handleChangeCurrentPosition, userId, position],
+		[userId, position],
 	);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		const sendIntervalId = setInterval(() => {
+			if (!userId) {
+				return;
+			}
+			handleChangeCurrentPosition({ ...position, id: userId });
+		}, 100);
+
+		return () => clearInterval(sendIntervalId);
+	}, []);
 
 	const userActions = useMemo<UserAction>(
 		() => ({
