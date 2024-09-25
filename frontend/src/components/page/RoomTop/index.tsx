@@ -10,6 +10,7 @@ export const RoomTop = () => {
 			headers: {
 				"Content-Type": "application/json",
 			},
+			mode: "cors",
 		});
 		const json = await res.json();
 		navigation({
