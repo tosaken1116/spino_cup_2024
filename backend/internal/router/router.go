@@ -3,6 +3,7 @@ package router
 import (
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -39,7 +40,13 @@ func setup(e *echo.Echo) {
 		},
 	}))
 	e.Use(otelecho.Middleware("api.spino.kurichi.dev", otelecho.WithSkipper(func(c echo.Context) bool {
-		return c.Request().URL.Path == "/" || c.Request().URL.Path == "/rooms/:id/join"
+		if c.Request().URL.Path == "/" {
+			return true
+		}
+		if strings.Contains(c.Request().Header.Get(echo.HeaderConnection), "Upgrade") {
+			return true
+		}
+		return false
 	})))
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
