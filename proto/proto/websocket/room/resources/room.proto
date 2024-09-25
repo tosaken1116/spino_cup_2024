@@ -32,3 +32,16 @@ message InitialState {
   int32 height = 3;
   int32 width = 4;
 }
+
+message User {
+  string id = 1;
+  string name = 2;
+  string avatarUrl = 3;
+}
+
+message JoinRoom {
+  User user = 1;
+  string OwnerId = 2;
+  int32 ScreenHeight = 3;
+  int32 ScreenWidth = 4;
+}
