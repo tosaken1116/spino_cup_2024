@@ -32,7 +32,7 @@ message ChangeScreenSizeToUser{
   room.resources.ScreenSize payload = 2;
 }
 
-message JoinUser {
+message LeaveRoom {
   string type = 1;
-  room.resources.JoinUser payload = 2;
+  room.resources.UserId payload = 2;
 }
