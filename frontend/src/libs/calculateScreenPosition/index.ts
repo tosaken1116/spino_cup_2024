@@ -23,9 +23,14 @@ type Props = {
 
 export const calculateScreenPosition = (props: Props) => {
   const { max, min, current } = props;
-
-  const x = Math.tan(((max.alpha - current.alpha) / 180) * Math.PI);
-
+  const add = max.alpha < min.alpha ? 360 : 0;
+  const left = max.alpha + add;
+  const right = min.alpha;
+  const x =
+    (current.alpha + (current.alpha < 180 ? add : 0) - right) / (left - right);
   const y = (max.beta - current.beta) / (max.beta - min.beta);
-  return { x: Math.min(Math.max(x, 0), 1), y: Math.min(Math.max(y, 0), 1) };
+  return {
+    x: Math.min(Math.max(2 * (1 - x), 0), 1),
+    y: Math.min(Math.max(1 - y, 0), 1),
+  };
 };
