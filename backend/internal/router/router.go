@@ -19,7 +19,8 @@ func New(
 ) *echo.Echo {
 	e := echo.New()
 	setup(e)
-	registerRoutes(e, roomHandler, authClient)
+	// registerRoutes(e, roomHandler, authClient)
+	registerRoutes(e, roomHandler) // TODO: フロントの認証ができたら
 	e.GET("/rooms/:id/join", activeRoomHandler.Join)
 
 	e.POST("/v1/signup", userHandler.SignUp)
