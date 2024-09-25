@@ -73,8 +73,8 @@ jobs:
         uses: ./.github/actions/setup-node
       - name: generate env
         run: |
-          rm -f frontend/.env.test
-          echo "VITE_PROD_API_DOMAIN=${{ secrets.VITE_PROD_API_DOMAIN}}" > frontend/.env
+          rm -f .env.test
+          echo "VITE_PROD_API_DOMAIN=${{ secrets.VITE_PROD_API_DOMAIN}}" > .env
       - name: build
         run: pnpm run build
       - name: upload artifact
