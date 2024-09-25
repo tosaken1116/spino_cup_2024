@@ -23,7 +23,7 @@ export const ScreenController = ({ positions }: Props) => {
 					onChange={(e) => {
 						setScreenSize((prev) => ({
 							...prev,
-							width: Number(e.target.value),
+							height: Number(e.target.value),
 						}));
 					}}
 				/>
