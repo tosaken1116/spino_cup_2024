@@ -14,6 +14,7 @@ import (
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/infra/ws"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/router"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/usecase"
+	"github.com/tosaken1116/spino_cup_2024/backend/pkg/auth"
 	"github.com/tosaken1116/spino_cup_2024/backend/pkg/database"
 )
 
@@ -31,9 +32,13 @@ func New() (*container.App, error) {
 	roomHandler := handler.NewRoomHandler(roomUsecase)
 	msgSender := ws.NewMsgSender()
 	activeRoomRepo := db.NewActiveRoomRepository()
-	inRoomUsecase := usecase.NewActiveRoomUsecase(msgSender, activeRoomRepo, roomRepository)
-	wsHandler := handler.NewWSHandler(inRoomUsecase, msgSender)
-	echo := router.New(roomHandler, wsHandler)
+	activeRoomUsecase := usecase.NewActiveRoomUsecase(msgSender, activeRoomRepo, roomRepository)
+	wsHandler := handler.NewWSHandler(activeRoomUsecase, msgSender)
+	userRepository := db.NewUserRepository(databaseDB)
+	userUsecase := usecase.NewUserUsecase(userRepository)
+	userHandler := handler.NewUserHandler(userUsecase)
+	authClient := auth.New()
+	echo := router.New(roomHandler, wsHandler, userHandler, authClient)
 	app := container.New(echo, databaseDB)
 	return app, nil
 }
