@@ -16,6 +16,7 @@ export type UserAction = {
 
 export type ScreenAction = {
 	type: "screen";
+	positions: UserPosition[];
 	handleChangeScreen: (payload: { width: number; height: number }) => void;
 };
 
@@ -31,12 +32,19 @@ export const useRoomUserWSClient = (
 		color: "#000000",
 		isClicked: false,
 	});
+	const [positions, setPositions] = useState<UserPosition[]>([]);
 	const { handleChangeCurrentPosition, handleChangeCurrentScreen } =
 		useRoomWSClient({
 			baseUrl: `${baseUrl}/rooms/${roomId}/join`,
-			ChangeUserPosition: () => {},
+			ChangeUserPosition: (payload) => {
+				const ids = positions.map((position) => position.id);
+				setPositions((prev) =>
+					prev.map((position) =>
+						ids.includes(position.id) ? { ...position, ...payload } : position,
+					),
+				);
+			},
 			JoinRoom: ({ userId, ownerId }) => {
-				console.log(userId, ownerId);
 				setUserId(userId);
 				setOwnerId(ownerId);
 			},
@@ -88,6 +96,7 @@ export const useRoomUserWSClient = (
 	const screenActions = useMemo<ScreenAction>(
 		() => ({
 			type: "screen",
+			positions,
 			handleChangeScreen: handleChangeCurrentScreen,
 		}),
 		[handleChangeCurrentScreen],
