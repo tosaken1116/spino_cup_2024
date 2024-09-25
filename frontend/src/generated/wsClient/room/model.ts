@@ -13,6 +13,7 @@ export type UserPosition = {
   color: string;
   isClicked: boolean;
   id: string;
+  penSize: number;
 }
 export type ScreenSize = {
   width: number;
