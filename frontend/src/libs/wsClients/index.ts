@@ -1,2 +1,2 @@
-export { useScreenUserWSClient } from "./screen";
-export { useRoomUserWSClient } from "./user";
+export { useRoomUserWSClient } from "./hook";
+export type { ScreenAction, UserAction } from "./hook";

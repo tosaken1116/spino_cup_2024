@@ -12,18 +12,12 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
-import { Route as ScreenIdIndexImport } from './routes/screen/$id/index'
 import { Route as RoomIdIndexImport } from './routes/room/$id/index'
 
 // Create/Update Routes
 
 const IndexRoute = IndexImport.update({
   path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ScreenIdIndexRoute = ScreenIdIndexImport.update({
-  path: '/screen/$id/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -50,13 +44,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RoomIdIndexImport
       parentRoute: typeof rootRoute
     }
-    '/screen/$id/': {
-      id: '/screen/$id/'
-      path: '/screen/$id'
-      fullPath: '/screen/$id'
-      preLoaderRoute: typeof ScreenIdIndexImport
-      parentRoute: typeof rootRoute
-    }
   }
 }
 
@@ -65,41 +52,36 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/room/$id': typeof RoomIdIndexRoute
-  '/screen/$id': typeof ScreenIdIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/room/$id': typeof RoomIdIndexRoute
-  '/screen/$id': typeof ScreenIdIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/room/$id/': typeof RoomIdIndexRoute
-  '/screen/$id/': typeof ScreenIdIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/room/$id' | '/screen/$id'
+  fullPaths: '/' | '/room/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/room/$id' | '/screen/$id'
-  id: '__root__' | '/' | '/room/$id/' | '/screen/$id/'
+  to: '/' | '/room/$id'
+  id: '__root__' | '/' | '/room/$id/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RoomIdIndexRoute: typeof RoomIdIndexRoute
-  ScreenIdIndexRoute: typeof ScreenIdIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RoomIdIndexRoute: RoomIdIndexRoute,
-  ScreenIdIndexRoute: ScreenIdIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -115,8 +97,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/room/$id/",
-        "/screen/$id/"
+        "/room/$id/"
       ]
     },
     "/": {
@@ -124,9 +105,6 @@ export const routeTree = rootRoute
     },
     "/room/$id/": {
       "filePath": "room/$id/index.tsx"
-    },
-    "/screen/$id/": {
-      "filePath": "screen/$id/index.tsx"
     }
   }
 }

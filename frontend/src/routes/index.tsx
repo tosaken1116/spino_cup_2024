@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RoomTop } from "../components/page/RoomTop";
 
 export const Route = createFileRoute("/")({
-	component: () => <div className="text-red-600">Hello /!</div>,
+	component: RoomTop,
 });
