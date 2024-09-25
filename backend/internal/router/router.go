@@ -40,7 +40,7 @@ func setup(e *echo.Echo) {
 		},
 	}))
 	e.Use(otelecho.Middleware("api.spino.kurichi.dev", otelecho.WithSkipper(func(c echo.Context) bool {
-		if c.Request().URL.Path == "/" {
+		if c.Path() == "/" {
 			return true
 		}
 		if strings.Contains(c.Request().Header.Get(echo.HeaderConnection), "Upgrade") {
