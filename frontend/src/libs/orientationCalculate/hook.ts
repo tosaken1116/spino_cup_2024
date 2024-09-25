@@ -54,8 +54,14 @@ export const useOrientationCalculate = ({
 			handleChangePointerPosition(
 				calculateScreenPosition({
 					current: props,
-					max: leftTopOrientation,
-					min: rightBottomOrientation,
+					max: {
+						alpha: leftTopOrientation.alpha,
+						beta: rightBottomOrientation.beta,
+					},
+					min: {
+						alpha: rightBottomOrientation.alpha,
+						beta: leftTopOrientation.beta,
+					},
 					screenSize,
 				}),
 			);
