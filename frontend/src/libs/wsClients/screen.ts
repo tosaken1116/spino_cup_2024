@@ -7,12 +7,13 @@ export const useScreenUserWSClient = (roomId: string) => {
 	const baseUrl = getBaseUrl("ws");
 	const [positions, setPositions] = useState<UserPosition[]>([]);
 	useRoomWSClient({
-		baseUrl: `${baseUrl}/rooms/${roomId}`,
-		ChangeCurrentPosition: () => {},
-		ChangeCurrentScreen: () => {},
-		ChangeUserPosition: (data) => {
-			setPositions(data.userPositions);
+		baseUrl: `${baseUrl}/rooms/${roomId}/join`,
+		ChangeUserPosition: (payload) => {
+			setPositions(payload.payload);
 		},
+		onChangeCurrentPosition: () => {},
+		onChangeCurrentScreen: () => {},
+		JoinRoom: () => {},
 	});
 
 	return { positions };

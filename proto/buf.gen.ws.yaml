@@ -5,9 +5,6 @@ managed:
 inputs:
   - directory: proto
     paths:
-      - proto/api
-  - directory: proto
-    paths:
       - proto/websocket
 
 plugins:

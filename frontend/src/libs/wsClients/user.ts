@@ -8,16 +8,16 @@ export const useRoomUserWSClient = (roomId: string) => {
 	const [position, setPosition] = useState<UserPosition>({
 		x: 0,
 		y: 0,
-		z: 0,
 		color: "#000000",
 		isClicked: false,
 		id: "test-id",
 	});
 	const { connection } = useRoomWSClient({
 		baseUrl: `${baseUrl}/rooms/${roomId}/join`,
-		ChangeCurrentPosition: () => {},
-		ChangeCurrentScreen: () => {},
 		ChangeUserPosition: () => {},
+		onChangeCurrentPosition: () => {},
+		onChangeCurrentScreen: () => {},
+		JoinRoom: () => {},
 	});
 
 	const handleClick = () => {

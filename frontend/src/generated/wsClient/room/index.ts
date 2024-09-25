@@ -5,8 +5,9 @@ import { useEffect, useRef } from "react";
 type Props = {
 	baseUrl: string;
 	ChangeUserPosition: (payload:RoomSchema.ChangeUserPosition)=>void;
-	ChangeCurrentPosition: (payload:RoomSchema.ChangeCurrentPosition)=>void;
-	ChangeCurrentScreen: (payload:RoomSchema.ChangeCurrentScreen)=>void;
+	JoinRoom: (payload:RoomSchema.JoinRoom)=>void;
+	onChangeCurrentPosition: (payload:RoomSchema.ChangeCurrentPosition)=>void;
+	onChangeCurrentScreen: (payload:RoomSchema.ChangeCurrentScreen)=>void;
 }
 export const useRoomWSClient = (props:Props) => {
 	const connectionRef = useRef<ReconnectingWebSocket | null>(
@@ -18,13 +19,16 @@ export const useRoomWSClient = (props:Props) => {
 				case 'ChangeUserPosition':
 					props.ChangeUserPosition(data.payload as RoomSchema.ChangeUserPosition)
 					break;
-				case 'ChangeCurrentPosition':
-					props.ChangeCurrentPosition(data.payload as RoomSchema.ChangeCurrentPosition)
-					break;
-				case 'ChangeCurrentScreen':
-					props.ChangeCurrentScreen(data.payload as RoomSchema.ChangeCurrentScreen)
+				case 'JoinRoom':
+					props.JoinRoom(data.payload as RoomSchema.JoinRoom)
 					break;
 			}
+	}
+	const handleChangeCurrentPosition = (payload:RoomSchema.ChangeCurrentPosition) => {
+		connectionRef.current?.send(JSON.stringify({type:'ChangeCurrentPosition', payload:payload}))
+	}
+	const handleChangeCurrentScreen = (payload:RoomSchema.ChangeCurrentScreen) => {
+		connectionRef.current?.send(JSON.stringify({type:'ChangeCurrentScreen', payload:payload}))
 	}
 	useEffect(() => {
 			const ws = new ReconnectingWebSocket(props.baseUrl);
@@ -35,6 +39,8 @@ export const useRoomWSClient = (props:Props) => {
 			}
 	})
 	return {
+		handleChangeCurrentPosition,
+		handleChangeCurrentScreen,
 		connection: connectionRef.current
 	}
 }

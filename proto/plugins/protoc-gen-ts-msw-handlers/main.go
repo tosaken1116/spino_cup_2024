@@ -82,7 +82,7 @@ func generateMockApiClient(gen *protogen.Plugin, files []*protogen.File) {
 	g.P("import { getBaseUrl } from \"../../libs/baseUrl\";")
 	for _, file := range files {
 		packageName := strings.ToLower(string(*file.Proto.Package))
-		if !strings.HasPrefix(file.GoImportPath.String(), "\"./\"") {
+		if !strings.Contains(file.GoImportPath.String(), "tosaken1116") {
 			continue
 		}
 		if strings.Contains(packageName, "rpc") || strings.Contains(packageName, "resource") {
@@ -96,7 +96,7 @@ func generateMockApiClient(gen *protogen.Plugin, files []*protogen.File) {
 	// apiClient 関数の生成
 	g.P("export const apiMockClientBase = (baseUrl: string) => ({")
 	for _, file := range files {
-		if !strings.HasPrefix(file.GoImportPath.String(), "\"./\"") {
+		if !strings.Contains(file.GoImportPath.String(), "tosaken1116") {
 			continue
 		}
 		packageName := strings.ToLower(string(*file.Proto.Package))
