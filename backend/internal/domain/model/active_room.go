@@ -8,17 +8,18 @@ type AcitveRoom struct {
 	ScreenHeight int
 	ScreenWidth  int
 	Lock         sync.RWMutex
-	Users        []string
+	Users        []*User
 }
 
-func (a *AcitveRoom) AddUser(userID string) {
+func (a *AcitveRoom) AddUser(user *User) {
 	a.Lock.Lock()
 	defer a.Lock.Unlock()
 
 	for _, u := range a.Users {
-		if u == userID {
+		if u.ID == user.ID {
 			return
 		}
 	}
-	a.Users = append(a.Users, userID)
+
+	a.Users = append(a.Users, user)
 }
