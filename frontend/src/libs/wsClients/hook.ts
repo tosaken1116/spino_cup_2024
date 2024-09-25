@@ -1,12 +1,16 @@
 import { useCallback, useMemo, useState } from "react";
 import { useRoomWSClient } from "../../generated/wsClient/room";
-import type { UserPosition } from "../../generated/wsClient/room/model";
+import type {
+	ScreenSize,
+	UserPosition,
+} from "../../generated/wsClient/room/model";
 import { getBaseUrl } from "../baseUrl";
 
 export type UserAction = {
 	type: "user";
 	color: string;
 	isClicked: boolean;
+	screenSize: ScreenSize;
 	handleChangePointerPosition: (
 		payload: Omit<UserPosition, "id" | "color" | "isClicked">,
 	) => void;
@@ -32,17 +36,26 @@ export const useRoomUserWSClient = (
 		color: "#000000",
 		isClicked: false,
 	});
+	const [screen, setScreen] = useState({ width: 0, height: 0 });
 	const [positions, setPositions] = useState<UserPosition[]>([]);
 	const { handleChangeCurrentPosition, handleChangeCurrentScreen } =
 		useRoomWSClient({
 			baseUrl: `${baseUrl}/rooms/${roomId}/join`,
+			ChangeScreenSizeToUser: (payload) => {
+				setScreen(payload);
+			},
 			ChangeUserPosition: (payload) => {
-				const ids = positions.map((position) => position.id);
-				setPositions((prev) =>
-					prev.map((position) =>
-						ids.includes(position.id) ? { ...position, ...payload } : position,
-					),
-				);
+				setPositions((prev) => {
+					const map = new Map<string, UserPosition>();
+					for (const item of prev) {
+						map.set(item.id, item);
+					}
+
+					for (const item of payload) {
+						map.set(item.id, item);
+					}
+					return Array.from(map.values());
+				});
 			},
 			JoinRoom: ({ userId, ownerId }) => {
 				setUserId(userId);
@@ -79,6 +92,7 @@ export const useRoomUserWSClient = (
 	const userActions = useMemo<UserAction>(
 		() => ({
 			type: "user",
+			screenSize: screen,
 			color: position.color,
 			isClicked: position.isClicked,
 			handleChangePointerPosition,
@@ -90,6 +104,7 @@ export const useRoomUserWSClient = (
 			handleChangePointerColor,
 			handleClickPointer,
 			position,
+			screen,
 		],
 	);
 

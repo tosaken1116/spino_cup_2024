@@ -22,14 +22,11 @@ type Props = {
 };
 
 export const calculateScreenPosition = (props: Props) => {
-	const { max, min, current, screenSize } = props;
+	const { max, min, current } = props;
 
 	const x =
-		(current.alpha / (max.alpha - min.alpha)) * screenSize.width +
-		screenSize.width / 2;
-	const y =
-		(current.beta / (max.beta - min.beta)) * screenSize.height +
-		screenSize.height / 2;
+		Math.abs(max.alpha - current.alpha) / Math.abs(max.alpha - min.alpha);
+	const y = Math.abs(max.beta - current.beta) / Math.abs(max.beta - min.beta);
 
-	return { x, y };
+	return { x: Math.min(Math.max(x, 0), 1), y: Math.min(Math.max(y, 0), 1) };
 };
