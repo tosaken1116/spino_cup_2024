@@ -1,0 +1,75 @@
+name: Test
+
+on:
+  pull_request:
+    paths:
+      - backend/**/*.go
+      - 'backend/docker/app/Dockerfile'
+      - 'go.mod'
+      - 'go.sum'
+      - .dockerignore
+      - '.github/workflows/back-ci.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - backend/**/*.go
+      - 'backend/docker/app/Dockerfile'
+      - 'go.mod'
+      - 'go.sum'
+      - .dockerignore
+      - '.github/workflows/back-deploy.yaml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: write
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        id: setup-go
+        with:
+          go-version-file: 'backend/go.mod'
+      - name: Download Go modules
+        run: go mod download
+        if: ${{ steps.setup-go.outputs.cache-hit != 'true' }}
+      - name: Build
+        run: go build server.go
+  test:
+    name: Test and Coverage
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+      - name: Run tests with coverage report output
+        run: go test ./... -coverprofile=coverage.out
+      - uses: k1LoW/octocov-action@v0
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        id: setup-go
+        with:
+          go-version-file: 'backend/go.mod'
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
