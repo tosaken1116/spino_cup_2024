@@ -22,7 +22,6 @@ export const Canvas = (props: Props) => {
 		if (context === null) {
 			return;
 		}
-		context.clearRect(0, 0, canvas.width, canvas.height);
 		for (const circle of props.circles) {
 			context.beginPath();
 			context.arc(circle.x, circle.y, 20, 0, 2 * Math.PI, false);

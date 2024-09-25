@@ -1,10 +1,13 @@
-import { useState, type FC } from "react";
+import { type FC, useState } from "react";
 type Props = {
 	defaultValue?: number;
 	onChange: (value: number) => void;
 };
 
-export const ChangePenSizeSlider: FC<Props> = ({ defaultValue = 5, onChange }) => {
+export const ChangePenSizeSlider: FC<Props> = ({
+	defaultValue = 5,
+	onChange,
+}) => {
 	const [value, setValue] = useState(defaultValue);
 	return (
 		<div className="flex flex-col gap-4">
@@ -18,7 +21,7 @@ export const ChangePenSizeSlider: FC<Props> = ({ defaultValue = 5, onChange }) =
 						value={value}
 						onChange={(e) => {
 							setValue(Number(e.target.value));
-							onChange(Number(e.target.value))
+							onChange(Number(e.target.value));
 						}}
 					/>
 				</label>
