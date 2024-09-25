@@ -10,3 +10,7 @@ export const generateRoomMock = (props?: Partial<Room>): Room => {
 		...props,
 	};
 };
+
+export const generateRoomMocks = (count: number): Room[] => {
+	return Array.from({ length: count }, () => generateRoomMock());
+};
