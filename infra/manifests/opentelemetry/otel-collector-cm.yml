@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-cm
+  namespace: opentelemetry
+data:
+  otel-collector-config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+          http:
+
+    processors:
+      batch: {}
+
+    exporters:
+      googlecloud:
+        project: spino-cup-2024
+        user_agent: "opentelemetry-collector"
+        metric:
+          prefix: "custom.googleapis.com/"
+    service:
+      pipelines:
+        metrics:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [googlecloud]
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [googlecloud]
