@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Canvas } from "../../../../components/ui/Canvas";
 import type { ScreenAction } from "../../../../libs/wsClients";
 
 type Props = Omit<ScreenAction, "type">;
@@ -35,6 +36,14 @@ export const ScreenController = ({ positions }: Props) => {
 					height: `${screenSize.height}px`,
 				}}
 			>
+				<Canvas
+					circles={positions.map((position) => ({
+						x: position.x * screenSize.width,
+						y: position.y * screenSize.height,
+						color: position.color,
+					}))}
+					screenSize={screenSize}
+				/>
 				{positions.map((position) => (
 					<div
 						key={position.id}
