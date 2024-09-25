@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useRoomWSClient } from "../../generated/wsClient/room";
 import type {
 	ScreenSize,
@@ -11,9 +11,7 @@ export type UserAction = {
 	color: string;
 	isClicked: boolean;
 	screenSize: ScreenSize;
-	handleChangePointerPosition: (
-		payload: Omit<UserPosition, "id" | "color" | "isClicked">,
-	) => void;
+	handleChangePointerPosition: (payload: Pick<UserPosition, "x" | "y">) => void;
 	handleChangePointerColor: (color: string) => void;
 	handleClickPointer: (isClicked: boolean) => void;
 };
@@ -30,11 +28,12 @@ export const useRoomUserWSClient = (
 	const baseUrl = getBaseUrl("ws");
 	const [userId, setUserId] = useState<string | null>(null);
 	const [ownerId, setOwnerId] = useState<string | null>(null);
-	const [position, setPosition] = useState<Omit<UserPosition, "id">>({
+	const position = useRef<Omit<UserPosition, "id">>({
 		x: 0,
 		y: 0,
 		color: "#000000",
 		isClicked: false,
+		penSize: 1,
 	});
 	const [screen, setScreen] = useState({ width: 0, height: 0 });
 	const [positions, setPositions] = useState<UserPosition[]>([]);
@@ -64,37 +63,45 @@ export const useRoomUserWSClient = (
 		});
 
 	const handleChangePointerPosition = useCallback(
-		(payload: Omit<UserPosition, "id" | "color" | "isClicked">) => {
+		(payload: Pick<UserPosition, "x" | "y">) => {
 			if (!userId) return;
-			handleChangeCurrentPosition({ id: userId, ...position, ...payload });
-			setPosition({ ...position, ...payload });
+			handleChangeCurrentPosition({
+				id: userId,
+				...position.current,
+				...payload,
+			});
+			position.current = { ...position.current, ...payload };
 		},
-		[handleChangeCurrentPosition, userId, position],
+		[handleChangeCurrentPosition, userId],
 	);
 	const handleChangePointerColor = useCallback(
 		(color: string) => {
 			if (!userId) return;
-			handleChangeCurrentPosition({ id: userId, ...position, color });
-			setPosition({ ...position, color });
+			handleChangeCurrentPosition({ id: userId, ...position.current, color });
+			position.current = { ...position.current, color };
 		},
-		[handleChangeCurrentPosition, userId, position],
+		[handleChangeCurrentPosition, userId],
 	);
 
 	const handleClickPointer = useCallback(
 		(isClicked: boolean) => {
 			if (!userId) return;
-			handleChangeCurrentPosition({ id: userId, ...position, isClicked });
-			setPosition({ ...position, isClicked });
+			handleChangeCurrentPosition({
+				id: userId,
+				...position.current,
+				isClicked,
+			});
+			position.current = { ...position.current, isClicked };
 		},
-		[handleChangeCurrentPosition, userId, position],
+		[handleChangeCurrentPosition, userId],
 	);
 
 	const userActions = useMemo<UserAction>(
 		() => ({
 			type: "user",
 			screenSize: screen,
-			color: position.color,
-			isClicked: position.isClicked,
+			color: position.current.color,
+			isClicked: position.current.isClicked,
 			handleChangePointerPosition,
 			handleChangePointerColor,
 			handleClickPointer,
@@ -103,7 +110,6 @@ export const useRoomUserWSClient = (
 			handleChangePointerPosition,
 			handleChangePointerColor,
 			handleClickPointer,
-			position,
 			screen,
 		],
 	);

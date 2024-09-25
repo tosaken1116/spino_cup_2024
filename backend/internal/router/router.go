@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/handler"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho" //nolint
 )
 
 func New(roomHandler handler.RoomHandler, activeRoomHandler handler.WSHandler) *echo.Echo {
@@ -39,7 +39,7 @@ func setup(e *echo.Echo) {
 			return c.Request().URL.Path == "/"
 		},
 		AllowMethods: []string{"GET", "POST", "PUT", "OPTIONS"},
-		AllowOrigins: []string{"http://localhost:5173", os.Getenv("ALLOW_ORIGIN")},
+		AllowOrigins: []string{"http://localhost:5173", "https://localhost:5173", os.Getenv("ALLOW_ORIGIN")},
 		AllowHeaders: []string{"Origin", "Content-Type", "Authorization"},
 	}))
 }

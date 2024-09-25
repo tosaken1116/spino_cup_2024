@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ScreenSize } from "../../generated/wsClient/room/model";
 import { calculateScreenPosition } from "../calculateScreenPosition";
 
@@ -18,95 +18,71 @@ export const useOrientationCalculate = ({
 		alpha: 0,
 		beta: 0,
 	});
+	const leftTopOrientationFetch = useRef<boolean>(false);
+	const rightBottomOrientationFetch = useRef<boolean>(false);
 
 	const handleSetLeftTopPoint = useCallback(() => {
-		window.addEventListener(
-			"deviceorientation",
-			(e) => {
-				setLeftTopOrientation({
-					alpha: e.alpha ?? 0,
-					beta: e.beta ?? 0,
-				});
-			},
-			{
-				once: true,
-			},
-		);
+		leftTopOrientationFetch.current = true;
 	}, []);
 
 	const handleSetRightBottomPoint = useCallback(() => {
-		window.addEventListener(
-			"deviceorientation",
-			(e) => {
-				setRightTopOrientation({
-					alpha: e.alpha ?? 0,
-					beta: e.beta ?? 0,
-				});
-			},
-			{
-				once: true,
-			},
-		);
+		rightBottomOrientationFetch.current = true;
 	}, []);
 
-	const setCurrentPointer = useCallback(
-		(props: { alpha: number; beta: number }) => {
-			handleChangePointerPosition(
-				calculateScreenPosition({
-					current: props,
-					max: leftTopOrientation,
-					min: rightBottomOrientation,
-					screenSize,
-				}),
-			);
-		},
-		[
-			handleChangePointerPosition,
-			leftTopOrientation,
-			rightBottomOrientation,
-			screenSize,
-		],
-	);
+	const setCurrentPointer = (props: {
+		alpha: number;
+		beta: number;
+		gamma: number;
+	}) => {
+		if (rightBottomOrientationFetch.current === true) {
+			setRightTopOrientation({
+				alpha: props.alpha,
+				beta: props.beta,
+			});
+			rightBottomOrientationFetch.current = false;
+		}
+		if (leftTopOrientationFetch.current === true) {
+			setLeftTopOrientation({
+				alpha: props.alpha,
+				beta: props.beta,
+			});
+			leftTopOrientationFetch.current = false;
+		}
+		handleChangePointerPosition(
+			calculateScreenPosition({
+				current: {
+					alpha: props.alpha,
+					beta: props.beta,
+				},
+				max: leftTopOrientation,
+				min: rightBottomOrientation,
+				screenSize,
+			}),
+		);
+	};
 
 	const handlePermissionGranted = async () => {
 		// @ts-ignore
-		await DeviceOrientationEvent.requestPermission()
+		await DeviceMotionEvent.requestPermission()
 			// @ts-ignore
 			.then((permissionState) => {
 				if (permissionState === "granted") {
 					setPermissionGranted(true);
-					// @ts-ignore
-					window.addEventListener("deviceorientation", setCurrentPointer);
 				}
 			})
 			.catch(console.error);
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		// @ts-ignore
-		if (typeof DeviceMotionEvent.requestPermission === "function") {
-			// @ts-ignore
-			DeviceMotionEvent.requestPermission()
-				// @ts-ignore
-				.then((permissionState) => {
-					if (permissionState === "granted") {
-						setPermissionGranted(true);
-						// @ts-ignore
-						window.addEventListener("deviceorientation", setCurrentPointer);
-					}
-				})
-				.catch(console.error);
-		} else {
-			setPermissionGranted(true);
-			// @ts-ignore
-			window.addEventListener("deviceorientation", setCurrentPointer);
-		}
-
+		window.addEventListener("deviceorientation", setCurrentPointer);
 		return () => {
 			// @ts-ignore
 			window.removeEventListener("deviceorientation", setCurrentPointer);
 		};
-	}, [setCurrentPointer]);
+	}, [permissionGranted, leftTopOrientation, rightBottomOrientation]);
+
 	return {
 		leftTopOrientation,
 		rightBottomOrientation,

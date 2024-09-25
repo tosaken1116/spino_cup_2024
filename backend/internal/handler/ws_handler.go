@@ -98,22 +98,29 @@ func (w *wsHandler) Join(c echo.Context) error {
 		switch msg.Type {
 		case "ChangeCurrentPosition":
 			var msg ChangeCurrentPosition
-			json.Unmarshal(p, &msg)
+			if err := json.Unmarshal(p, &msg); err != nil {
+				fmt.Printf("err: %v\n", err)
+			}
 
-			w.uc.SendPointer(ctx, &usecase.SendPointerReq{
+			if err := w.uc.SendPointer(ctx, &usecase.SendPointerReq{
 				UserID:    userID,
 				RoomID:    roomID,
 				X:         msg.Payload.X,
 				Y:         msg.Payload.Y,
 				Color:     msg.Payload.Color,
 				IsClicked: msg.Payload.IsClicked,
-			})
+			}); err != nil {
+				fmt.Printf("err: %v\n", err)
+			}
 		case "ChangeCurrentScreen":
 			var msg ChangeCurrentScreen
-			json.Unmarshal(p, &msg)
+			if err := json.Unmarshal(p, &msg); err != nil {
+				fmt.Printf("err: %v\n", err)
+			}
 
-			w.uc.ChangeScreenSize(ctx, roomID, msg.Payload.Height, msg.Payload.Width)
-
+			if err := w.uc.ChangeScreenSize(ctx, roomID, msg.Payload.Height, msg.Payload.Width); err != nil {
+				fmt.Printf("err: %v\n", err)
+			}
 		}
 	}
 

@@ -18,6 +18,7 @@ message UserPosition {
   string color = 3;
   bool isClicked = 4;
   string id = 5;
+  int32 penSize = 6;
 }
 
 message ScreenSize{
