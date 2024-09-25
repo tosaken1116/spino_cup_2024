@@ -9,7 +9,9 @@ data:
       otlp:
         protocols:
           grpc:
+            endpoint: "0.0.0.0:4317"
           http:
+            endpoint: "0.0.0.0:4318"
 
     processors:
       batch: {}
@@ -20,13 +22,15 @@ data:
         user_agent: "opentelemetry-collector"
         metric:
           prefix: "custom.googleapis.com/"
+      debug:
+        verbosity: detailed
     service:
       pipelines:
         metrics:
           receivers: [otlp]
           processors: [batch]
-          exporters: [googlecloud]
+          exporters: [googlecloud, debug]
         traces:
           receivers: [otlp]
           processors: [batch]
-          exporters: [googlecloud]
+          exporters: [googlecloud, debug]
