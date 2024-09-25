@@ -77,6 +77,33 @@ func (r *roomRepoImpl) GetRoom(ctx context.Context, id model.RoomID) (*model.Roo
 	return room, nil
 }
 
+// ListRoom implements repository.RoomRepository.
+func (r *roomRepoImpl) ListRoom(ctx context.Context) ([]*model.Room, error) {
+	var data []roomModel
+	query := r.db.NewSelect().Model(&data)
+
+	if err := query.Scan(ctx); err != nil {
+		return nil, fmt.Errorf("failed to get rooms: %w", err)
+	}
+
+	rooms := make([]*model.Room, 0, len(data))
+	for _, room := range data {
+		room, err := model.NewRoomFromData(
+			room.ID,
+			room.Name,
+			room.Description,
+			room.CreatedAt,
+			room.UpdatedAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create room: %w", err)
+		}
+		rooms = append(rooms, room)
+	}
+
+	return rooms, nil
+}
+
 // UpdateRoom implements repository.RoomRepository.
 func (r *roomRepoImpl) UpdateRoom(ctx context.Context, room *model.Room) error {
 	data := &roomModel{

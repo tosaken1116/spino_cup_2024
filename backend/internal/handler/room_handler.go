@@ -13,6 +13,7 @@ import (
 type RoomHandler interface {
 	CreateRoom(c echo.Context) error
 	GetRoom(c echo.Context) error
+	ListRoom(c echo.Context) error
 	UpdateRoom(c echo.Context) error
 }
 
@@ -56,6 +57,16 @@ func (r *roomHandler) GetRoom(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, room)
+}
+
+// ListRoom implements RoomHandler.
+func (r *roomHandler) ListRoom(c echo.Context) error {
+	rooms, err := r.roomUsecase.ListRoom(c.Request().Context())
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err).SetInternal(err)
+	}
+
+	return c.JSON(http.StatusOK, rooms)
 }
 
 // UpdateRoom implements RoomHandler.

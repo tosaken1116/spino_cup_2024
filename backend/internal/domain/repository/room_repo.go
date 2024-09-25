@@ -9,5 +9,6 @@ import (
 type RoomRepository interface {
 	CreateRoom(ctx context.Context, room *model.Room) error
 	GetRoom(ctx context.Context, id model.RoomID) (*model.Room, error)
+	ListRoom(ctx context.Context) ([]*model.Room, error)
 	UpdateRoom(ctx context.Context, room *model.Room) error
 }
