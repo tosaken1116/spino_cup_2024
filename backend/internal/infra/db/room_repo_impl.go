@@ -33,12 +33,13 @@ func NewRoomRepository(db *database.DB) repository.RoomRepository {
 
 // CreateRoom implements repository.RoomRepository.
 func (r *roomRepoImpl) CreateRoom(ctx context.Context, room *model.Room) error {
+	now := time.Now()
 	data := &roomModel{
 		ID:          room.ID.String(),
 		Name:        room.Name,
 		Description: room.Description,
-		CreatedAt:   room.CreatedAt,
-		UpdatedAt:   room.UpdatedAt,
+		CreatedAt:   now,
+		UpdatedAt:   now,
 	}
 
 	stmt := r.db.NewInsert().Model(data)
@@ -67,8 +68,6 @@ func (r *roomRepoImpl) GetRoom(ctx context.Context, id model.RoomID) (*model.Roo
 		data.ID,
 		data.Name,
 		data.Description,
-		data.CreatedAt,
-		data.UpdatedAt,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create room: %w", err)
@@ -80,7 +79,7 @@ func (r *roomRepoImpl) GetRoom(ctx context.Context, id model.RoomID) (*model.Roo
 // ListRoom implements repository.RoomRepository.
 func (r *roomRepoImpl) ListRoom(ctx context.Context) ([]*model.Room, error) {
 	var data []roomModel
-	query := r.db.NewSelect().Model(&data)
+	query := r.db.NewSelect().Model(&data).Order("created_at DESC").Limit(100)
 
 	if err := query.Scan(ctx); err != nil {
 		return nil, fmt.Errorf("failed to get rooms: %w", err)
@@ -92,8 +91,6 @@ func (r *roomRepoImpl) ListRoom(ctx context.Context) ([]*model.Room, error) {
 			room.ID,
 			room.Name,
 			room.Description,
-			room.CreatedAt,
-			room.UpdatedAt,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create room: %w", err)
@@ -110,11 +107,10 @@ func (r *roomRepoImpl) UpdateRoom(ctx context.Context, room *model.Room) error {
 		ID:          room.ID.String(),
 		Name:        room.Name,
 		Description: room.Description,
-		CreatedAt:   room.CreatedAt,
-		UpdatedAt:   room.UpdatedAt,
+		UpdatedAt:   time.Now(),
 	}
 
-	stmt := r.db.NewUpdate().Model(data).Where("id = ?", room.ID.String())
+	stmt := r.db.NewUpdate().Model(data).OmitZero().Where("id = ?", room.ID.String())
 	if _, err := stmt.Exec(ctx); err != nil {
 		return fmt.Errorf("failed to update room: %w", err)
 	}

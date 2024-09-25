@@ -41,8 +41,8 @@ func NewRoomHandler(roomUsecase usecase.RoomUsecase) RoomHandler {
 
 // CreateRoom implements RoomHandler.
 func (r *roomHandler) CreateRoom(c echo.Context) error {
-	req := &rpc.CreateRoomRequest{}
-	if err := c.Bind(req); err != nil {
+	var req rpc.CreateRoomRequest
+	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err).SetInternal(err)
 	}
 
@@ -100,8 +100,8 @@ func (r *roomHandler) ListRoom(c echo.Context) error {
 // UpdateRoom implements RoomHandler.
 func (r *roomHandler) UpdateRoom(c echo.Context) error {
 	id := c.Param("id")
-	req := &rpc.UpdateRoomRequest{}
-	if err := c.Bind(req); err != nil {
+	var req rpc.UpdateRoomRequest
+	if err := c.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err).SetInternal(err)
 	}
 
