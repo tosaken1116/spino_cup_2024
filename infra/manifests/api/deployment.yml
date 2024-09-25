@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: asia-northeast1-docker.pkg.dev/spino-cup-2024/spino-docker-prod/app:a9347e89b8101156df9078abe9c65f53938417df
+          image: asia-northeast1-docker.pkg.dev/spino-cup-2024/spino-docker-prod/app:a7198f35a4df73fe8d4566583cc02c6767c83123
           imagePullPolicy: IfNotPresent
           env:
             - name: DB_USER
