@@ -4,13 +4,17 @@
 import { UserPosition, ScreenSize } from './model';
 export type ChangeUserPosition = {
   type: string;
-  userPositions: UserPosition[];
+  payload: UserPosition[];
 };
 export type ChangeCurrentPosition = {
   type: string;
-  position: UserPosition;
+  payload: UserPosition;
 };
 export type ChangeCurrentScreen = {
   type: string;
-  size: ScreenSize;
+  payload: ScreenSize;
+};
+export type JoinRoom = {
+  type: string;
+  payload: ScreenSize;
 };
