@@ -10,7 +10,6 @@ export type Room = {
 export type UserPosition = {
   x: number;
   y: number;
-  z: number;
   color: string;
   isClicked: boolean;
   id: string;
@@ -18,4 +17,10 @@ export type UserPosition = {
 export type ScreenSize = {
   width: number;
   height: number;
+}
+export type InitialState = {
+  userId: string;
+  ownerId: string;
+  height: number;
+  width: number;
 }

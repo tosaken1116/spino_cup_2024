@@ -12,6 +12,7 @@ import "google/api/annotations.proto";
 
 service RoomService {
   rpc ChangeUserPosition(google.protobuf.Empty) returns (room.rpc.ChangeUserPosition) {}
-  rpc ChangeCurrentPosition(google.protobuf.Empty) returns (room.rpc.ChangeCurrentPosition) {}
-  rpc ChangeCurrentScreen(google.protobuf.Empty) returns (room.rpc.ChangeCurrentScreen) {}
+  rpc JoinRoom(google.protobuf.Empty) returns (room.rpc.JoinRoom) {}
+  rpc ChangeCurrentPosition(room.rpc.ChangeCurrentPosition) returns (google.protobuf.Empty) {}
+  rpc ChangeCurrentScreen(room.rpc.ChangeCurrentScreen) returns (google.protobuf.Empty) {}
 }
