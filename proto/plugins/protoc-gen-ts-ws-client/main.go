@@ -260,7 +260,7 @@ func generateWSClient(gen *protogen.Plugin, file *protogen.File) {
 	g.P("			return () => {")
 	g.P("				ws.close();")
 	g.P("			}")
-	g.P("	})")
+	g.P("	},[])")
 	g.P("	return {")
 	for _, events := range handleEventsContexts {
 		g.P(fmt.Sprintf("		handle%s,", events))
