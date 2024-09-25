@@ -84,8 +84,6 @@ export const useOrientationCalculate = ({
 	}, [permissionGranted, leftTopOrientation, rightBottomOrientation]);
 
 	return {
-		leftTopOrientation,
-		rightBottomOrientation,
 		permissionGranted,
 		handleSetLeftTopPoint,
 		handleSetRightBottomPoint,
