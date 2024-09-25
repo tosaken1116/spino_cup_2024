@@ -24,7 +24,7 @@ message ChangeCurrentScreen {
 
 message JoinRoom {
   string type = 1;
-  room.resources.InitialState payload = 2;
+  room.resources.JoinRoom payload = 2;
 }
 
 message ChangeScreenSizeToUser{
