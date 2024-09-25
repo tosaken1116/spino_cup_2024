@@ -11,7 +11,8 @@ func registerRoutes(
 	roomHandler handler.RoomHandler,
 	authClient *auth.AuthClient,
 ) {
-	e.POST("/v1/rooms", roomHandler.CreateRoom, authClient.Middleware)
+	// e.POST("/v1/rooms", roomHandler.CreateRoom, authClient.Middleware)
+	e.POST("/v1/rooms", roomHandler.CreateRoom)
 	e.GET("/v1/rooms/:id", roomHandler.GetRoom)
 	e.PUT("/v1/rooms/:id", roomHandler.UpdateRoom)
 	e.GET("/v1/rooms", roomHandler.ListRoom)
