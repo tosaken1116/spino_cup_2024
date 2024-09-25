@@ -36,4 +36,8 @@ const createRoomRepository = (apiClient: ApiClient) => ({
 		const res = await apiClient.room.joinRoom(req);
 		return res;
 	},
+	listRoom: async () => {
+		const res = await apiClient.room.listRoom();
+		return res;
+	},
 });

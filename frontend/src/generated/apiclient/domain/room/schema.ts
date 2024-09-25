@@ -28,3 +28,7 @@ export type JoinRoomRequest = {
 export type JoinRoomResponse = {
   room: Room;
 };
+export type ListRoomResponse = {
+  rooms: Room[];
+  total: number;
+};

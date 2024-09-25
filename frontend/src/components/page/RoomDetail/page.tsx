@@ -1,27 +1,27 @@
+import { ScreenController } from "../../../domains/room/components/ScrrenController/ScreenController";
+import { UserController } from "../../../domains/room/components/UserController";
 import { useRoomUserWSClient } from "../../../libs/wsClients";
 
 type Props = {
 	id: string;
 };
 export const RoomDetailPage = (props: Props) => {
-	const { handleClick, isConnected } = useRoomUserWSClient(props.id);
+	const actions = useRoomUserWSClient(props.id);
+	if (actions === null) {
+		return <p>...connecting</p>;
+	}
+	console.log(actions.type);
+	if (actions.type === "user") {
+		return (
+			<div>
+				<UserController {...actions} />
+			</div>
+		);
+	}
+
 	return (
 		<div>
-			{isConnected ? (
-				<div>
-					<p>connected</p>
-				</div>
-			) : (
-				<div>
-					<p>not connected</p>
-				</div>
-			)}
-			<button type="button" onClick={handleClick}>
-				Click me
-			</button>
-			<p>
-				if click this button, you can see the screen click state will change
-			</p>
+			<ScreenController {...actions} />
 		</div>
 	);
 };

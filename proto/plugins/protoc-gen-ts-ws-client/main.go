@@ -216,10 +216,8 @@ func generateWSClient(gen *protogen.Plugin, file *protogen.File) {
 	g.P("	baseUrl: string;")
 	for _, service := range file.Services {
 		for _, method := range service.Methods {
-			respType := fmt.Sprintf("%sSchema.%s", ToUpperCamelCase(packageName), method.Output.GoIdent.GoName)
-			reqType := fmt.Sprintf("%sSchema.%s", ToUpperCamelCase(packageName), method.Input.GoIdent.GoName)
+			respType := fmt.Sprintf("%sSchema.%s[\"payload\"]", ToUpperCamelCase(packageName), method.Output.GoIdent.GoName)
 			if method.Output.GoIdent.GoName == "Empty" {
-				g.P(fmt.Sprintf("	on%s: (payload:%s)=>void;", method.GoName, reqType))
 				handleEventsContexts = append(handleEventsContexts, method.GoName)
 				continue
 			}
@@ -243,7 +241,7 @@ func generateWSClient(gen *protogen.Plugin, file *protogen.File) {
 			respType := fmt.Sprintf("%sSchema.%s", ToUpperCamelCase(packageName), method.Output.GoIdent.GoName)
 			// 各APIメソッドの生成
 			g.P(fmt.Sprintf("				case '%s':", method.Desc.Name()))
-			g.P(fmt.Sprintf("					props.%s(data.payload as %s)", method.Desc.Name(), respType))
+			g.P(fmt.Sprintf("					props.%s(data.payload as %s[\"payload\"])", method.Desc.Name(), respType))
 			g.P("					break;")
 		}
 	}
@@ -251,7 +249,7 @@ func generateWSClient(gen *protogen.Plugin, file *protogen.File) {
 	g.P("	}")
 
 	for _, events := range handleEventsContexts {
-		g.P(fmt.Sprintf("	const handle%s = (payload:%sSchema.%s) => {", events, ToUpperCamelCase(packageName), events))
+		g.P(fmt.Sprintf("	const handle%s = (payload:%sSchema.%s[\"payload\"]) => {", events, ToUpperCamelCase(packageName), events))
 		g.P(fmt.Sprintf("		connectionRef.current?.send(JSON.stringify({type:'%s', payload:payload}))", events))
 		g.P("	}")
 	}
@@ -262,7 +260,7 @@ func generateWSClient(gen *protogen.Plugin, file *protogen.File) {
 	g.P("			return () => {")
 	g.P("				ws.close();")
 	g.P("			}")
-	g.P("	})")
+	g.P("	},[])")
 	g.P("	return {")
 	for _, events := range handleEventsContexts {
 		g.P(fmt.Sprintf("		handle%s,", events))

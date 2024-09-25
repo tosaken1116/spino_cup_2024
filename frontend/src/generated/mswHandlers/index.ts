@@ -21,6 +21,10 @@ export const apiMockClientBase = (baseUrl: string) => ({
 			http.post(`${baseUrl}/v1/rooms/:id/join`, () => {
 				return HttpResponse.json(data)
 			}),
+		listRoom: (data: RoomSchema.ListRoomResponse) =>
+			http.get(`${baseUrl}/v1/rooms`, () => {
+				return HttpResponse.json(data)
+			}),
   },
 });
 export const apiMockClient = apiMockClientBase(getBaseUrl())

@@ -46,6 +46,16 @@ export const apiClient = (baseUrl: string) => ({
 			}
 			return await res.json();
 		},
+		listRoom: async (): Promise<RoomSchema.ListRoomResponse> => {
+			const res = await fetch(`${baseUrl}/v1/rooms`, {
+				method: 'GET',
+				headers: { 'Content-Type': 'application/json' },
+			});
+			if (!res.ok) {
+				throw new Error('Network response was not ok');
+			}
+			return await res.json();
+		},
   },
 });
 export type ApiClient = ReturnType<typeof apiClient>
