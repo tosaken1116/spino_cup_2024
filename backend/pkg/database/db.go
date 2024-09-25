@@ -1,12 +1,13 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/mysqldialect"
+	"github.com/uptrace/opentelemetry-go-extra/otelsql"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 )
 
 type DB struct {
@@ -24,7 +25,10 @@ type Config struct {
 func New(cfg *Config) (*DB, error) {
 	dns := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName)
 
-	sqldb, err := sql.Open("mysql", dns)
+	sqldb, err := otelsql.Open("mysql", dns,
+		otelsql.WithAttributes(semconv.DBSystemMySQL),
+		otelsql.WithDBName(cfg.DBName),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open mysql connection: %w", err)
 	}
