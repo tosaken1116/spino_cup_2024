@@ -36,7 +36,9 @@ export const ScreenController = ({ positions }: Props) => {
 				}}
 			>
 				{positions.map((position) => (
-					<div key={position.id} className="absolute"
+					<div
+						key={position.id}
+						className="absolute"
 						style={{
 							left: `${position.x * screenSize.width}px`,
 							top: `${position.y * screenSize.height}px`,
