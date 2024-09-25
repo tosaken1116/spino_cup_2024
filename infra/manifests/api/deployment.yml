@@ -47,6 +47,8 @@ spec:
               value: "localhost"
             - name: DB_PORT
               value: "3306"
+            - name: ALLOW_ORIGIN
+              value: "spino.kurichi.dev"
           resources:
             requests:
               cpu: 100m
