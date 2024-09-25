@@ -39,7 +39,7 @@ func setup(e *echo.Echo) {
 			return c.Request().URL.Path == "/"
 		},
 		AllowMethods: []string{"GET", "POST", "PUT", "OPTIONS"},
-		AllowOrigins: []string{os.Getenv("ALLOW_ORIGIN")},
+		AllowOrigins: []string{"localhost", os.Getenv("ALLOW_ORIGIN")},
 		AllowHeaders: []string{"Origin", "Content-Type", "Authorization"},
 	}))
 }
