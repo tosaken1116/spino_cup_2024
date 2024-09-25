@@ -2,9 +2,11 @@
 package handler
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/labstack/echo/v4"
@@ -23,7 +25,7 @@ type RoomRequest struct {
 func TestRoomHandler_CreateRoom(t *testing.T) {
 	tests := []struct {
 		name       string
-		arg        *RoomRequest
+		arg        any
 		fn         func(mockUsecase *mu.MockRoomUsecase)
 		wantStatus int
 		wantBody   string
@@ -46,6 +48,20 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 			},
 			wantStatus: http.StatusOK,
 			wantBody:   "{\"room\":{\"id\":\"01AN4Z07BY79KA1307SR9X4MV3\",\"name\":\"Test Room\",\"description\":\"This is a test room\"}}\n",
+		},
+		{
+			name: "失敗: Bindエラー",
+			arg: &struct {
+				Name        int
+				Description string
+			}{
+				Name:        1,
+				Description: "This is a test room",
+			},
+			fn: func(mockUsecase *mu.MockRoomUsecase) {
+			},
+			wantStatus: http.StatusBadRequest,
+			wantBody:   "{\"message\":\"Unmarshal type error: expected=string, got=number, field=name, offset=9\"}\n",
 		},
 		{
 			name: "失敗: ルーム名が空",
@@ -87,13 +103,18 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 			tt.fn(mockUsecase)
 
 			e := echo.New()
-			req := httptest.NewRequest(http.MethodPost, "/", nil)
+			body, err := json.Marshal(tt.arg)
+			if err != nil {
+				t.Fatalf("Failed to marshal request body: %v", err)
+			}
+			req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(string(body)))
+			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 			rec := httptest.NewRecorder()
 			c := e.NewContext(req, rec)
 			c.SetPath("/v1/rooms")
 
 			handler := NewRoomHandler(mockUsecase)
-			err := handler.CreateRoom(c)
+			err = handler.CreateRoom(c)
 			if err != nil {
 				e.HTTPErrorHandler(err, c)
 			}
@@ -178,6 +199,7 @@ func TestRoomHandler_GetRoom(t *testing.T) {
 
 			e := echo.New()
 			req := httptest.NewRequest(http.MethodGet, "/", nil)
+			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 			rec := httptest.NewRecorder()
 			c := e.NewContext(req, rec)
 			c.SetPath("/v1/rooms/:id")
@@ -273,7 +295,7 @@ func TestRoomHandler_UpdateRoom(t *testing.T) {
 	tests := []struct {
 		name       string
 		roomID     string
-		arg        *RoomRequest
+		arg        any
 		fn         func(mockUsecase *mu.MockRoomUsecase)
 		wantStatus int
 		wantBody   string
@@ -297,6 +319,20 @@ func TestRoomHandler_UpdateRoom(t *testing.T) {
 			},
 			wantStatus: http.StatusOK,
 			wantBody:   "{\"room\":{\"id\":\"01AN4Z07BY79KA1307SR9X4MV3\",\"name\":\"Updated Room\",\"description\":\"This is an updated room\"}}\n",
+		},
+		{
+			name: "失敗: Bindエラー",
+			arg: &struct {
+				Name        int
+				Description string
+			}{
+				Name:        1,
+				Description: "This is a test room",
+			},
+			fn: func(mockUsecase *mu.MockRoomUsecase) {
+			},
+			wantStatus: http.StatusBadRequest,
+			wantBody:   "{\"message\":\"Unmarshal type error: expected=string, got=number, field=name, offset=9\"}\n",
 		},
 		{
 			name:   "失敗: ルームIDが不正",
@@ -340,7 +376,12 @@ func TestRoomHandler_UpdateRoom(t *testing.T) {
 			tt.fn(mockUsecase)
 
 			e := echo.New()
-			req := httptest.NewRequest(http.MethodGet, "/", nil)
+			body, err := json.Marshal(tt.arg)
+			if err != nil {
+				t.Fatalf("Failed to marshal request body: %v", err)
+			}
+			req := httptest.NewRequest(http.MethodPut, "/", strings.NewReader(string(body)))
+			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 			rec := httptest.NewRecorder()
 			c := e.NewContext(req, rec)
 			c.SetPath("/v1/rooms/:id")
@@ -348,7 +389,7 @@ func TestRoomHandler_UpdateRoom(t *testing.T) {
 			c.SetParamValues(tt.roomID)
 
 			handler := NewRoomHandler(mockUsecase)
-			err := handler.UpdateRoom(c)
+			err = handler.UpdateRoom(c)
 			if err != nil {
 				e.HTTPErrorHandler(err, c)
 			}
