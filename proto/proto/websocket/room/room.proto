@@ -16,5 +16,5 @@ service RoomService {
   rpc ChangeScreenSizeToUser(google.protobuf.Empty)returns(room.rpc.ChangeScreenSizeToUser){}
   rpc ChangeCurrentPosition(room.rpc.ChangeCurrentPosition) returns (google.protobuf.Empty) {}
   rpc ChangeCurrentScreen(room.rpc.ChangeCurrentScreen) returns (google.protobuf.Empty) {}
-  rpc LeaveRoom(google.protobuf.Empty) returns (room.rpc.UserLeaveRoom) {}
+  rpc LeaveRoom(google.protobuf.Empty) returns (room.rpc.LeaveRoom) {}
 }
