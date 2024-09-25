@@ -99,7 +99,7 @@ export const useRoomUserWSClient = (
 			positions,
 			handleChangeScreen: handleChangeCurrentScreen,
 		}),
-		[handleChangeCurrentScreen],
+		[handleChangeCurrentScreen, positions],
 	);
 
 	if (userId !== null && ownerId !== null && userId !== ownerId) {
