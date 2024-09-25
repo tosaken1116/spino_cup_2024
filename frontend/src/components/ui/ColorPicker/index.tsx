@@ -124,6 +124,7 @@ export const ColorPicker: FC<ColorPickerProps> = ({ onChangeColor }) => {
 
 			const width = canvas.width;
 			const height = canvas.height;
+
 			const dx = x - width / 2;
 			const dy = y - height / 2;
 			const distance = Math.sqrt(dx * dx + dy * dy);
@@ -254,12 +255,11 @@ export const ColorPicker: FC<ColorPickerProps> = ({ onChangeColor }) => {
 	}, [drawSelectionMarker]);
 
 	return (
-		<div className="relative flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-			{/* ドラッグ中のみ選択色の大きな表示 */}
+		<div className="relative flex flex-col items-center justify-center p-4">
 			{isDragging && (
-				<div className="absolute top-10">
+				<div className="absolute top-2">
 					<div
-						className="w-32 h-32 rounded-full border-4"
+						className="w-8 h-8 rounded-full border-2"
 						style={{ backgroundColor: selectedColor, borderColor: "#ccc" }}
 					/>
 				</div>
@@ -270,7 +270,7 @@ export const ColorPicker: FC<ColorPickerProps> = ({ onChangeColor }) => {
 				ref={canvasRef}
 				width={300}
 				height={300}
-				className="w-72 h-72 bg-white rounded-full shadow-md cursor-pointer"
+				className="w-full h-full aspect-square bg-white rounded-full shadow-md cursor-pointer"
 				onMouseDown={handleMouseDown}
 				onMouseMove={handleMouseMove}
 				onMouseUp={handleMouseUp}

@@ -14,6 +14,7 @@ export type UserAction = {
 	handleChangePointerPosition: (payload: Pick<UserPosition, "x" | "y">) => void;
 	handleChangePointerColor: (color: string) => void;
 	handleClickPointer: (isClicked: boolean) => void;
+	handleChangePenSize: (penSize: number) => void;
 };
 
 export type ScreenAction = {
@@ -95,6 +96,18 @@ export const useRoomUserWSClient = (
 		},
 		[handleChangeCurrentPosition, userId],
 	);
+	const handleChangePenSize = useCallback(
+		(penSize: number) => {
+			if (!userId) return;
+			handleChangeCurrentPosition({
+				id: userId,
+				...position.current,
+				penSize,
+			});
+			position.current = { ...position.current, penSize };
+		},
+		[handleChangeCurrentPosition, userId],
+	);
 
 	const userActions = useMemo<UserAction>(
 		() => ({
@@ -105,11 +118,13 @@ export const useRoomUserWSClient = (
 			handleChangePointerPosition,
 			handleChangePointerColor,
 			handleClickPointer,
+			handleChangePenSize,
 		}),
 		[
 			handleChangePointerPosition,
 			handleChangePointerColor,
 			handleClickPointer,
+			handleChangePenSize,
 			screen,
 		],
 	);

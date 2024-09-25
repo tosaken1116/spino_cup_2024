@@ -1,6 +1,7 @@
-import clsx from "clsx";
 import { useState } from "react";
+import { ChangePenSizeSlider } from "../../../../components/ui/ChangePenSizeSlider";
 import { ColorPicker } from "../../../../components/ui/ColorPicker";
+import { DrawButton } from "../../../../components/ui/DrawButton";
 import { useOrientationCalculate } from "../../../../libs/orientationCalculate";
 import type { UserAction } from "../../../../libs/wsClients";
 
@@ -11,6 +12,7 @@ export const UserController = ({
 	isClicked,
 	screenSize,
 	handleClickPointer,
+	handleChangePenSize,
 	handleChangePointerPosition,
 }: Props) => {
 	const [position, setPosition] = useState({
@@ -32,56 +34,31 @@ export const UserController = ({
 		},
 	});
 	return (
-		<div>
-			{permissionGranted ? <p>Permission granted</p> : <p>Permission denied</p>}
-			<div>
-				<p>左上の座標</p>
-				<p>α: {leftTopOrientation.alpha}</p>
-				<p>β: {leftTopOrientation.beta}</p>
+		<div className="flex flex-col gap-4 h-full">
+			<div className="flex flex-row gap-2 h-full">
+				<div className="w-full flex justify-center items-center">
+					<div className="relative w-48 h-28 rounded-md border-2">
+						<div
+							className="absolute w-2 h-2"
+							style={{
+								left: `${position.x}px`,
+								top: `${position.y}px`,
+							}}
+						/>
+					</div>
+				</div>
+				<div className="w-1/4">
+					<ChangePenSizeSlider onChange={handleChangePenSize} />
+				</div>
 			</div>
-			<div>
-				<p>現在の座標</p>
-				<p>x: {position.x * 100}</p>
-				<p>y: {position.y * 100}</p>
+			<div className="flex flex-row items-end h-full p-4">
+				<div className="w-2/3">
+					<ColorPicker onChangeColor={handleChangePointerColor} />
+				</div>
+				<div className="w-1/3">
+					<DrawButton onChangePointer={handleClickPointer} />
+				</div>
 			</div>
-			<div className="relative w-[100px] h-[100px] border-[1px]">
-				<div
-					className="absolute w-2 h-2 rounded-full bg-red-200"
-					style={{
-						left: `${position.x * 100}px`,
-						top: `${position.y * 100}px`,
-					}}
-				/>
-			</div>
-
-			<div>
-				<p>右下の座標</p>
-				<p>α: {rightBottomOrientation.alpha}</p>
-				<p>β: {rightBottomOrientation.beta}</p>
-			</div>
-			<button type="button" onClick={handlePermissionGranted}>
-				権限を設定
-			</button>
-			<button type="button" onClick={handleSetRightBottomPoint}>
-				右下の座標を設定
-			</button>
-			<button type="button" onClick={handleSetLeftTopPoint}>
-				左上の座標を設定
-			</button>
-			<button
-				type="button"
-				onTouchStart={() => handleClickPointer(true)}
-				onTouchEnd={() => handleClickPointer(false)}
-				onMouseDown={() => handleClickPointer(true)}
-				onMouseUp={() => handleClickPointer(false)}
-				className={clsx("w-32 h-32 rounded-full", {
-					"bg-blue-500": isClicked,
-					"bg-blue-300": !isClicked,
-				})}
-			>
-				クリック
-			</button>
-			<ColorPicker onChangeColor={handleChangePointerColor} />
 		</div>
 	);
 };
