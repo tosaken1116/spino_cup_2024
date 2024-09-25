@@ -6,6 +6,7 @@ type Props = {
 	baseUrl: string;
 	ChangeUserPosition: (payload:RoomSchema.ChangeUserPosition["payload"])=>void;
 	JoinRoom: (payload:RoomSchema.JoinRoom["payload"])=>void;
+	ChangeScreenSizeToUser: (payload:RoomSchema.ChangeScreenSizeToUser["payload"])=>void;
 }
 export const useRoomWSClient = (props:Props) => {
 	const connectionRef = useRef<ReconnectingWebSocket | null>(
@@ -19,6 +20,9 @@ export const useRoomWSClient = (props:Props) => {
 					break;
 				case 'JoinRoom':
 					props.JoinRoom(data.payload as RoomSchema.JoinRoom["payload"])
+					break;
+				case 'ChangeScreenSizeToUser':
+					props.ChangeScreenSizeToUser(data.payload as RoomSchema.ChangeScreenSizeToUser["payload"])
 					break;
 			}
 	}

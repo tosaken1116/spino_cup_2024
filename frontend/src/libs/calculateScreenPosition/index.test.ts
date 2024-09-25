@@ -16,7 +16,7 @@ describe("calculateScreenPosition", () => {
 			screenSize,
 		});
 
-		expect(result).toEqual({ x: 960, y: 540 });
+		expect(result).toEqual({ x: 1 / 2, y: 1 / 2 });
 	});
 	test("should calculate screen position from right", () => {
 		const max = { alpha: 45, beta: 45 };
@@ -32,7 +32,7 @@ describe("calculateScreenPosition", () => {
 			screenSize,
 		});
 
-		expect(result).toEqual({ x: (1920 / 6) * 4, y: 540 });
+		expect(result).toEqual({ x: 1 / 3, y: 1 / 2 });
 	});
 	test("should calculate screen position from left", () => {
 		const max = { alpha: 45, beta: 45 };
@@ -48,7 +48,7 @@ describe("calculateScreenPosition", () => {
 			screenSize,
 		});
 
-		expect(result).toEqual({ x: (1920 / 6) * 2, y: 540 });
+		expect(result).toEqual({ x: 2 / 3, y: 1 / 2 });
 	});
 
 	test("should calculate screen position from top", () => {
@@ -65,7 +65,7 @@ describe("calculateScreenPosition", () => {
 			screenSize,
 		});
 
-		expect(result).toEqual({ x: 960, y: (1080 / 6) * 4 });
+		expect(result).toEqual({ x: 1 / 2, y: 1 / 3 });
 	});
 	test("should calculate screen position from bottom", () => {
 		const max = { alpha: 45, beta: 45 };
@@ -81,6 +81,6 @@ describe("calculateScreenPosition", () => {
 			screenSize,
 		});
 
-		expect(result).toEqual({ x: 960, y: (1080 / 6) * 2 });
+		expect(result).toEqual({ x: 1 / 2, y: 2 / 3 });
 	});
 });

@@ -1,33 +1,42 @@
-import { useRef } from "react";
+import { useState } from "react";
 import type { ScreenAction } from "../../../../libs/wsClients";
 
 type Props = Omit<ScreenAction, "type">;
-export const ScreenController = ({ handleChangeScreen, positions }: Props) => {
-	const ref = useRef<HTMLFormElement>(null);
+export const ScreenController = ({ positions }: Props) => {
+	const [screenSize, setScreenSize] = useState({ width: 0, height: 0 });
 	return (
 		<div>
-			<form
-				ref={ref}
-				onSubmit={() => {
-					handleChangeScreen({
-						width: Number(ref.current?.elements),
-						height: Number(ref.current?.elements),
-					});
+			<label>
+				横幅
+				<input
+					onChange={(e) => {
+						setScreenSize((prev) => ({
+							...prev,
+							width: Number(e.target.value),
+						}));
+					}}
+				/>
+			</label>
+			<label>
+				高さ
+				<input
+					onChange={(e) => {
+						setScreenSize((prev) => ({
+							...prev,
+							width: Number(e.target.value),
+						}));
+					}}
+				/>
+			</label>
+			<div
+				className="relative border border-black rounded-sm"
+				style={{
+					width: `${screenSize.width}px`,
+					height: `${screenSize.height}px`,
 				}}
 			>
-				<label>
-					横幅
-					<input />
-				</label>
-				<label>
-					高さ
-					<input />
-				</label>
-				<button type="submit">決定</button>
-			</form>
-			<div>
 				{positions.map((position) => (
-					<div key={position.id}>
+					<div key={position.id} className="absolute">
 						<p>{position.id}</p>
 						<p className="text-xl">{position.isClicked ? "🖕" : "🫵"}</p>
 						<div
