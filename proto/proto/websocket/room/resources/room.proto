@@ -45,3 +45,7 @@ message JoinRoom {
   int32 ScreenHeight = 3;
   int32 ScreenWidth = 4;
 }
+
+message UserId {
+  string id = 1;
+}
