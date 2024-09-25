@@ -37,7 +37,10 @@ func New() (*container.App, error) {
 	userRepository := db.NewUserRepository(databaseDB)
 	userUsecase := usecase.NewUserUsecase(userRepository)
 	userHandler := handler.NewUserHandler(userUsecase)
-	authClient := auth.New()
+	authClient, err := auth.New()
+	if err != nil {
+		return nil, err
+	}
 	echo := router.New(roomHandler, wsHandler, userHandler, authClient)
 	app := container.New(echo, databaseDB)
 	return app, nil
