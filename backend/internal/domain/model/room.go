@@ -17,8 +17,6 @@ type Room struct {
 	ID          RoomID
 	Name        string
 	Description string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
 }
 
 func NewRoomID() (RoomID, error) {
@@ -40,22 +38,19 @@ func (r RoomID) String() string {
 	return ulid.ULID(r).String()
 }
 
-func NewRoom(name, description string) (*Room, error) {
-	id, err := NewRoomID()
-	if err != nil {
-		return nil, err
+func NewRoom(id RoomID, name, description string) (*Room, error) {
+	if name == "" {
+		return nil, ErrRoomNameRequired
 	}
 
 	return &Room{
-		ID:          RoomID(id),
+		ID:          id,
 		Name:        name,
 		Description: description,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
 	}, nil
 }
 
-func NewRoomFromData(id, name, description string, createdAt, updatedAt time.Time) (*Room, error) {
+func NewRoomFromData(id, name, description string) (*Room, error) {
 	_id, err := ParseRoomID(id)
 	if err != nil {
 		return nil, err
@@ -65,7 +60,5 @@ func NewRoomFromData(id, name, description string, createdAt, updatedAt time.Tim
 		ID:          _id,
 		Name:        name,
 		Description: description,
-		CreatedAt:   createdAt,
-		UpdatedAt:   updatedAt,
 	}, nil
 }

@@ -21,8 +21,6 @@ func NewRoomDTOFromModel(m *model.Room) *RoomDTO {
 		ID:          m.ID.String(),
 		Name:        m.Name,
 		Description: m.Description,
-		CreatedAt:   m.CreatedAt,
-		UpdatedAt:   m.UpdatedAt,
 	}
 }
 
@@ -43,7 +41,12 @@ func NewRoomUsecase(repo repository.RoomRepository) RoomUsecase {
 
 // CreateRoom implements RoomUsecase.
 func (r *roomUsecase) CreateRoom(ctx context.Context, dto *RoomDTO) (*RoomDTO, error) {
-	room, err := model.NewRoom(dto.Name, dto.Description)
+	id, err := model.NewRoomID()
+	if err != nil {
+		return nil, err
+	}
+
+	room, err := model.NewRoom(id, dto.Name, dto.Description)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +102,6 @@ func (r *roomUsecase) UpdateRoom(ctx context.Context, dto *RoomDTO) (*RoomDTO, e
 
 	room.Name = dto.Name
 	room.Description = dto.Description
-	room.UpdatedAt = time.Now()
 	if err := r.repo.UpdateRoom(ctx, room); err != nil {
 		return nil, err
 	}
