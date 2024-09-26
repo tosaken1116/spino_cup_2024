@@ -34,13 +34,13 @@ func New() (*container.App, error) {
 	activeRoomRepo := db.NewActiveRoomRepository()
 	userRepository := db.NewUserRepository(databaseDB)
 	activeRoomUsecase := usecase.NewActiveRoomUsecase(msgSender, activeRoomRepo, roomRepository, userRepository)
-	wsHandler := handler.NewWSHandler(activeRoomUsecase, msgSender)
-	userUsecase := usecase.NewUserUsecase(userRepository)
-	userHandler := handler.NewUserHandler(userUsecase)
 	authClient, err := auth.New()
 	if err != nil {
 		return nil, err
 	}
+	wsHandler := handler.NewWSHandler(activeRoomUsecase, msgSender, authClient)
+	userUsecase := usecase.NewUserUsecase(userRepository)
+	userHandler := handler.NewUserHandler(userUsecase)
 	echo := router.New(roomHandler, wsHandler, userHandler, authClient)
 	app := container.New(echo, databaseDB)
 	return app, nil
