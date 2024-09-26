@@ -13,7 +13,10 @@ export const useRoomUsecase = () => {
 	const createRoom = useCallback(
 		async (props: CreateRoomProps) => {
 			const res = await repository.createRoom(props);
-			await mutate(roomCacheKeyGenerator.getRoom({ id: res.room.id }));
+			await Promise.all([
+				mutate(roomCacheKeyGenerator.getRoom({ id: res.room.id })),
+				mutate(roomCacheKeyGenerator.listRoom()),
+			]);
 		},
 		[repository.createRoom],
 	);

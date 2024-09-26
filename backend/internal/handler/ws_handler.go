@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/infra/ws"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/usecase"
+	"github.com/tosaken1116/spino_cup_2024/backend/pkg/auth"
 )
 
 type Base struct {
@@ -29,6 +29,7 @@ type UserPosition struct {
 	Y         float64 `json:"y"`
 	Color     string  `json:"color"`
 	IsClicked bool    `json:"isClicked"`
+	PenSize   int     `json:"penSize"`
 }
 
 type ChangeCurrentScreen struct {
@@ -46,27 +47,36 @@ type WSHandler interface {
 }
 
 type wsHandler struct {
-	upgrader  *websocket.Upgrader
-	uc        usecase.ActiveRoomUsecase
-	msgSender *ws.MsgSender
+	upgrader   *websocket.Upgrader
+	uc         usecase.ActiveRoomUsecase
+	msgSender  *ws.MsgSender
+	authClient *auth.AuthClient
 }
 
-func NewWSHandler(uc usecase.ActiveRoomUsecase, msgSender *ws.MsgSender) WSHandler {
+func NewWSHandler(uc usecase.ActiveRoomUsecase, msgSender *ws.MsgSender, authClient *auth.AuthClient) WSHandler {
 	return &wsHandler{
 		upgrader: &websocket.Upgrader{
 			CheckOrigin: func(r *http.Request) bool {
 				return true
 			},
 		},
-		uc:        uc,
-		msgSender: msgSender,
+		uc:         uc,
+		msgSender:  msgSender,
+		authClient: authClient,
 	}
 }
 
 // Join implements WSHandler.
 func (w *wsHandler) Join(c echo.Context) (err error) {
 	roomID := c.Param("id")
-	userID := uuid.New().String()
+
+	token := c.QueryParam("token")
+	ctx := c.Request().Context()
+	idToken, err := w.authClient.VerifyIDToken(ctx, token)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized).SetInternal(err)
+	}
+	userID := idToken.UID
 
 	ws, err := w.upgrader.Upgrade(c.Response(), c.Request(), nil)
 	if err != nil {
@@ -79,7 +89,6 @@ func (w *wsHandler) Join(c echo.Context) (err error) {
 	w.msgSender.Register(userID, ws, errCh)
 	defer w.msgSender.Unregister(userID)
 
-	ctx := c.Request().Context()
 	if err := w.uc.JoinRoom(ctx, userID, roomID); err != nil {
 		fmt.Printf("err: %v\n", err)
 		return nil
@@ -116,6 +125,7 @@ func (w *wsHandler) Join(c echo.Context) (err error) {
 				Y:         msg.Payload.Y,
 				Color:     msg.Payload.Color,
 				IsClicked: msg.Payload.IsClicked,
+				PenSize:   msg.Payload.PenSize,
 			}); err != nil {
 				fmt.Printf("err: %v\n", err)
 			}

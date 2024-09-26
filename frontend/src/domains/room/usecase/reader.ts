@@ -13,3 +13,10 @@ export const useGetRoom = (props: GetRoomProps) => {
 		},
 	);
 };
+
+export const useListRoom = () => {
+	const repository = useRoomRepository();
+	return useSWR(roomCacheKeyGenerator.listRoom(), () => repository.listRoom(), {
+		suspense: true,
+	});
+};

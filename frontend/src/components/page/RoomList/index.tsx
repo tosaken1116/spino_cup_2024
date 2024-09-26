@@ -1,28 +1,35 @@
 import { useNavigate } from "@tanstack/react-router";
+import { RoomList } from "../../../domains/room/components/RoomList";
+import { useAuthContext } from "../../../libs/auth/providers";
 import { getBaseUrl } from "../../../libs/baseUrl";
 
-export const RoomTop = () => {
+export const RoomListPage = () => {
 	const navigation = useNavigate();
+	const { token } = useAuthContext();
 	const handleClick = async () => {
 		const res = await fetch(`${getBaseUrl()}/v1/rooms`, {
 			method: "POST",
 			body: JSON.stringify({ name: "test" }),
 			headers: {
+				Authorization: `Bearer ${token}`,
 				"Content-Type": "application/json",
 			},
 			mode: "cors",
 		});
 		const json = await res.json();
 		navigation({
-			to: "/room/$id",
+			to: "/rooms/$id",
 			params: {
 				id: json.room.id,
 			},
 		});
 	};
 	return (
-		<button type="button" onClick={handleClick}>
-			click to generate room
-		</button>
+		<div className="w-full h-screen flex flex-row ">
+			<RoomList />
+			<button type="button" onClick={handleClick}>
+				click to generate room
+			</button>
+		</div>
 	);
 };

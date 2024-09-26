@@ -17,4 +17,7 @@ export const roomCacheKeyGenerator = {
 	joinRoom: (req: GetRoomRequest) => {
 		return JSON.stringify(req);
 	},
+	listRoom: () => {
+		return "LIST_ROOM";
+	},
 } as const;

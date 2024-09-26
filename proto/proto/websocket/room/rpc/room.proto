@@ -9,7 +9,7 @@ import "websocket/room/resources/room.proto";
 
 message ChangeUserPosition {
   string type = 1;
-  repeated room.resources.UserPosition  payload = 2;
+  repeated room.resources.UserPositionToScreen  payload = 2;
 }
 
 message ChangeCurrentPosition {
@@ -24,7 +24,7 @@ message ChangeCurrentScreen {
 
 message JoinRoom {
   string type = 1;
-  room.resources.JoinRoom payload = 2;
+  room.resources.JoinRoomSchema payload = 2;
 }
 
 message ChangeScreenSizeToUser{

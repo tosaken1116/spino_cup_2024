@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"time"
 
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/domain/model"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/domain/repository"
@@ -12,8 +11,7 @@ type RoomDTO struct {
 	ID          string
 	Name        string
 	Description string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	OwnerID     string
 }
 
 func NewRoomDTOFromModel(m *model.Room) *RoomDTO {
@@ -21,6 +19,7 @@ func NewRoomDTOFromModel(m *model.Room) *RoomDTO {
 		ID:          m.ID.String(),
 		Name:        m.Name,
 		Description: m.Description,
+		OwnerID:     m.OwnerID,
 	}
 }
 
@@ -46,7 +45,7 @@ func (r *roomUsecase) CreateRoom(ctx context.Context, dto *RoomDTO) (*RoomDTO, e
 		return nil, err
 	}
 
-	room, err := model.NewRoom(id, dto.Name, dto.Description)
+	room, err := model.NewRoom(id, dto.Name, dto.Description, dto.OwnerID)
 	if err != nil {
 		return nil, err
 	}

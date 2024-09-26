@@ -26,3 +26,7 @@ func New() (*AuthClient, error) {
 		client: client,
 	}, nil
 }
+
+func (a *AuthClient) VerifyIDToken(ctx context.Context, idToken string) (*auth.Token, error) {
+	return a.client.VerifyIDToken(ctx, idToken)
+}

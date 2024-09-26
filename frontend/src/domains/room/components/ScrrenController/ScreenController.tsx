@@ -46,18 +46,26 @@ export const ScreenController = ({ positions }: Props) => {
 				/>
 				{positions.map((position) => (
 					<div
-						key={position.id}
-						className="absolute"
+						key={position.user.id}
+						className="absolute flex flex-row gap-2 items-center justify-center"
 						style={{
 							left: `${position.x * screenSize.width}px`,
 							top: `${position.y * screenSize.height}px`,
 						}}
 					>
-						<p>{position.id}</p>
-						<p className="text-xl">{position.isClicked ? "🖕" : "🫵"}</p>
+						<img
+							alt={position.user.name}
+							height={32}
+							width={32}
+							className="rounded-full"
+							src={position.user.avatarUrl}
+						/>
+						<p className="font-semibold">{position.user.name}</p>
 						<div
-							className="w-4 h-4 rounded-full"
+							className="rounded-full"
 							style={{
+								width: `${position.penSize}px`,
+								height: `${position.penSize}px`,
 								backgroundColor: position.color,
 							}}
 						/>

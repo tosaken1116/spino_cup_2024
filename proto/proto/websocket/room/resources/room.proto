@@ -21,6 +21,15 @@ message UserPosition {
   int32 penSize = 6;
 }
 
+message UserPositionToScreen {
+  double x = 1;
+  double y = 2;
+  string color = 3;
+  bool isClicked = 4;
+  User user = 5;
+  int32 penSize = 6;
+}
+
 message ScreenSize{
   int32 width = 1;
   int32 height = 2;
@@ -32,11 +41,11 @@ message User {
   string avatarUrl = 3;
 }
 
-message JoinRoom {
+message JoinRoomSchema {
   User user = 1;
-  string OwnerId = 2;
-  int32 ScreenHeight = 3;
-  int32 ScreenWidth = 4;
+  string ownerId = 2;
+  int32 screenHeight = 3;
+  int32 screenWidth = 4;
 }
 
 message UserId {
