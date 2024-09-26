@@ -8,12 +8,14 @@ import (
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/domain/model"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/handler/schema/api/room/rpc"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/usecase"
+	"github.com/tosaken1116/spino_cup_2024/backend/pkg/auth"
 )
 
 type RoomResponse struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	OwnerID     string `json:"ownerId"`
 }
 
 func NewRoomResponseFromDTO(dto *usecase.RoomDTO) *RoomResponse {
@@ -21,6 +23,7 @@ func NewRoomResponseFromDTO(dto *usecase.RoomDTO) *RoomResponse {
 		ID:          dto.ID,
 		Name:        dto.Name,
 		Description: dto.Description,
+		OwnerID:     dto.OwnerID,
 	}
 }
 
@@ -46,9 +49,15 @@ func (r *roomHandler) CreateRoom(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err).SetInternal(err)
 	}
 
+	userID, err := auth.GetUserID(c.Request().Context())
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
+	}
+
 	roomDTO, err := r.roomUsecase.CreateRoom(c.Request().Context(), &usecase.RoomDTO{
 		Name:        req.Name,
 		Description: req.Description,
+		OwnerID:     userID,
 	})
 	if err != nil {
 		switch {

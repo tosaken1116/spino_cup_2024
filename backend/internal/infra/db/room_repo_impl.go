@@ -17,9 +17,9 @@ type roomModel struct {
 	bun.BaseModel `bun:"rooms"`
 
 	ID          string `bun:",pk"`
-	OwnerID     string
 	Name        string
 	Description string
+	OwnerID     string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -39,6 +39,7 @@ func (r *roomRepoImpl) CreateRoom(ctx context.Context, room *model.Room) error {
 		ID:          room.ID.String(),
 		Name:        room.Name,
 		Description: room.Description,
+		OwnerID:     room.OwnerID,
 		CreatedAt:   now,
 		UpdatedAt:   now,
 	}
@@ -69,6 +70,7 @@ func (r *roomRepoImpl) GetRoom(ctx context.Context, id model.RoomID) (*model.Roo
 		data.ID,
 		data.Name,
 		data.Description,
+		data.OwnerID,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create room: %w", err)
@@ -92,6 +94,7 @@ func (r *roomRepoImpl) ListRoom(ctx context.Context) ([]*model.Room, error) {
 			room.ID,
 			room.Name,
 			room.Description,
+			room.OwnerID,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create room: %w", err)
