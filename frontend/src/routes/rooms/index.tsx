@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { RoomListPage } from "../../components/page/RoomList";
-import { WithAuth } from "../../libs/auth";
+import { AuthProvider } from "../../libs/auth";
 
 export const Route = createFileRoute("/rooms/")({
 	component: () => (
-		<WithAuth>
+		<AuthProvider>
 			<RoomListPage />
-		</WithAuth>
+		</AuthProvider>
 	),
 });

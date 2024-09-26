@@ -1,2 +1,1 @@
-export { useAuthUseCase } from "./hook";
-export { WithAuth } from "./providers";
+export { AuthProvider } from "./providers";
