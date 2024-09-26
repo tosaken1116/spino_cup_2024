@@ -13,7 +13,7 @@ const RoomListRender = () => {
 	const { data } = useListRoom();
 	return (
 		<ul>
-			{data.rooms.map((room, index) => (
+			{data.rooms.map((room) => (
 				<li key={room.id}>
 					<p>{room.id}</p>
 					<p>{room.name}</p>

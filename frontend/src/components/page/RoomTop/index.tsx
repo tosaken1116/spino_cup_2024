@@ -1,5 +1,4 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useRoomUsecase } from "../../../domains/room/usecase";
 import { getBaseUrl } from "../../../libs/baseUrl";
 
 export const RoomTop = () => {
