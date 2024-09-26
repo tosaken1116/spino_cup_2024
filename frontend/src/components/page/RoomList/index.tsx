@@ -25,12 +25,12 @@ export const RoomListPage = () => {
 		});
 	};
 	return (
-		<div className="w-full h-[calc(100vh-64px)] flex flex-row ">
+		<div className="w-full h-[calc(100vh-64px)] flex md:flex-row flex-col ">
 			<div className="w-full flex items-center justify-center pt-8 flex-col gap-8">
 				<strong className="text-xl"> 現在作成済みのルーム</strong>
 				<RoomList />
 			</div>
-			<div className="w-full flex justify-center items-center">
+			<div className="w-full flex justify-center md:visible  items-center">
 				<button
 					type="button"
 					onClick={handleClick}
