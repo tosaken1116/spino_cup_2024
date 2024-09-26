@@ -14,6 +14,7 @@ import (
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/domain/model"
 	mu "github.com/tosaken1116/spino_cup_2024/backend/internal/mock/usecase"
 	"github.com/tosaken1116/spino_cup_2024/backend/internal/usecase"
+	"github.com/tosaken1116/spino_cup_2024/backend/pkg/auth"
 	"go.uber.org/mock/gomock"
 )
 
@@ -44,10 +45,11 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 						ID:          "01AN4Z07BY79KA1307SR9X4MV3",
 						Name:        "Test Room",
 						Description: "This is a test room",
+						OwnerID:     "user1",
 					}, nil)
 			},
 			wantStatus: http.StatusOK,
-			wantBody:   "{\"room\":{\"id\":\"01AN4Z07BY79KA1307SR9X4MV3\",\"name\":\"Test Room\",\"description\":\"This is a test room\"}}\n",
+			wantBody:   "{\"room\":{\"id\":\"01AN4Z07BY79KA1307SR9X4MV3\",\"name\":\"Test Room\",\"description\":\"This is a test room\",\"ownerId\":\"user1\"}}\n",
 		},
 		{
 			name: "失敗: Bindエラー",
@@ -112,6 +114,8 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 			rec := httptest.NewRecorder()
 			c := e.NewContext(req, rec)
 			c.SetPath("/v1/rooms")
+			ctx := auth.SetUserID(c.Request().Context(), "user1")
+			c.SetRequest(c.Request().WithContext(ctx))
 
 			handler := NewRoomHandler(mockUsecase)
 			err = handler.CreateRoom(c)
@@ -147,10 +151,11 @@ func TestRoomHandler_GetRoom(t *testing.T) {
 						ID:          "01AN4Z07BY79KA1307SR9X4MV3",
 						Name:        "Test Room",
 						Description: "This is a test room",
+						OwnerID:     "user1",
 					}, nil)
 			},
 			wantStatus: http.StatusOK,
-			wantBody:   "{\"room\":{\"id\":\"01AN4Z07BY79KA1307SR9X4MV3\",\"name\":\"Test Room\",\"description\":\"This is a test room\"}}\n",
+			wantBody:   "{\"room\":{\"id\":\"01AN4Z07BY79KA1307SR9X4MV3\",\"name\":\"Test Room\",\"description\":\"This is a test room\",\"ownerId\":\"user1\"}}\n",
 		},
 		{
 			name:   "失敗: ルームIDが不正",
@@ -239,16 +244,18 @@ func TestRoomHandler_ListRoom(t *testing.T) {
 							ID:          "01AN4Z07BY79KA1307SR9X4MV3",
 							Name:        "Test Room 1",
 							Description: "This is a test room 1",
+							OwnerID:     "user1",
 						},
 						{
 							ID:          "02AN4Z07BY79KA1307SR9X4MV4",
 							Name:        "Test Room 2",
 							Description: "This is a test room 2",
+							OwnerID:     "user2",
 						},
 					}, nil)
 			},
 			wantStatus: http.StatusOK,
-			wantBody:   "{\"rooms\":[{\"id\":\"01AN4Z07BY79KA1307SR9X4MV3\",\"name\":\"Test Room 1\",\"description\":\"This is a test room 1\"},{\"id\":\"02AN4Z07BY79KA1307SR9X4MV4\",\"name\":\"Test Room 2\",\"description\":\"This is a test room 2\"}]}\n",
+			wantBody:   "{\"rooms\":[{\"id\":\"01AN4Z07BY79KA1307SR9X4MV3\",\"name\":\"Test Room 1\",\"description\":\"This is a test room 1\",\"ownerId\":\"user1\"},{\"id\":\"02AN4Z07BY79KA1307SR9X4MV4\",\"name\":\"Test Room 2\",\"description\":\"This is a test room 2\",\"ownerId\":\"user2\"}]}\n",
 		},
 		{
 			name: "失敗: 内部サーバーエラー",
@@ -315,10 +322,11 @@ func TestRoomHandler_UpdateRoom(t *testing.T) {
 						ID:          "01AN4Z07BY79KA1307SR9X4MV3",
 						Name:        "Updated Room",
 						Description: "This is an updated room",
+						OwnerID:     "updated_user",
 					}, nil)
 			},
 			wantStatus: http.StatusOK,
-			wantBody:   "{\"room\":{\"id\":\"01AN4Z07BY79KA1307SR9X4MV3\",\"name\":\"Updated Room\",\"description\":\"This is an updated room\"}}\n",
+			wantBody:   "{\"room\":{\"id\":\"01AN4Z07BY79KA1307SR9X4MV3\",\"name\":\"Updated Room\",\"description\":\"This is an updated room\",\"ownerId\":\"updated_user\"}}\n",
 		},
 		{
 			name: "失敗: Bindエラー",

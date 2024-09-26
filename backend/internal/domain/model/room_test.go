@@ -84,6 +84,7 @@ func TestNewRoom(t *testing.T) {
 		id          RoomID
 		name        string
 		description string
+		ownerID     string
 	}
 	tests := []struct {
 		name      string
@@ -97,11 +98,13 @@ func TestNewRoom(t *testing.T) {
 				id:          id,
 				name:        "room1",
 				description: "room1 description",
+				ownerID:     "user1",
 			},
 			want: &Room{
 				ID:          id,
 				Name:        "room1",
 				Description: "room1 description",
+				OwnerID:     "user1",
 			},
 			assertion: assert.NoError,
 		},
@@ -111,6 +114,7 @@ func TestNewRoom(t *testing.T) {
 				id:          id,
 				name:        "",
 				description: "",
+				ownerID:     "",
 			},
 			want: nil,
 			assertion: func(t assert.TestingT, err error, msgAndArgs ...interface{}) bool {
@@ -122,7 +126,7 @@ func TestNewRoom(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			got, err := NewRoom(tt.args.id, tt.args.name, tt.args.description)
+			got, err := NewRoom(tt.args.id, tt.args.name, tt.args.description, tt.args.ownerID)
 			tt.assertion(t, err)
 			assert.Equal(t, tt.want, got)
 		})
@@ -137,6 +141,7 @@ func TestNewRoomFromData(t *testing.T) {
 		id          string
 		name        string
 		description string
+		ownerID     string
 	}
 	tests := []struct {
 		name      string
@@ -150,11 +155,13 @@ func TestNewRoomFromData(t *testing.T) {
 				id:          id.String(),
 				name:        "room1",
 				description: "room1 description",
+				ownerID:     "user1",
 			},
 			want: &Room{
 				ID:          RoomID(id),
 				Name:        "room1",
 				Description: "room1 description",
+				OwnerID:     "user1",
 			},
 			assertion: assert.NoError,
 		},
@@ -164,6 +171,7 @@ func TestNewRoomFromData(t *testing.T) {
 				id:          "invalid id",
 				name:        "room1",
 				description: "room1 description",
+				ownerID:     "user1",
 			},
 			want: nil,
 			assertion: func(t assert.TestingT, err error, msgAndArgs ...interface{}) bool {

@@ -157,8 +157,6 @@ func Test_roomUsecase_CreateRoom(t *testing.T) {
 			got, err := r.CreateRoom(tt.args.ctx, tt.args.dto)
 			if got != nil {
 				got.ID = tt.want.ID
-				got.CreatedAt = time.Time{}
-				got.UpdatedAt = time.Time{}
 			}
 
 			tt.assertion(t, err)
@@ -443,10 +441,6 @@ func Test_roomUsecase_UpdateRoom(t *testing.T) {
 				repo: repo,
 			}
 			got, err := r.UpdateRoom(tt.args.ctx, tt.args.dto)
-			if got != nil {
-				got.CreatedAt = time.Time{}
-				got.UpdatedAt = time.Time{}
-			}
 
 			tt.assertion(t, err)
 			assert.Equal(t, tt.want, got)
