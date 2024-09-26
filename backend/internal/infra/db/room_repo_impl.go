@@ -17,6 +17,7 @@ type roomModel struct {
 	bun.BaseModel `bun:"rooms"`
 
 	ID          string `bun:",pk"`
+	OwnerID     string
 	Name        string
 	Description string
 	CreatedAt   time.Time
