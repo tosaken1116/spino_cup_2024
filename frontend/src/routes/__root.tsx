@@ -2,8 +2,8 @@ import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
 
 export const Route = createRootRoute({
   component: () => (
-    <div className="w-screen overflow-x-hidden">
-      <header className="px-4 py-2">
+    <div className="w-full overflow-x-hidden  overflow-y-hidden">
+      <header className="px-4">
         <Link to="/" className="[&.active]:font-bold flex flex-row items-end">
           <p className="text-blue-400 text-4xl rotate-2">お</p>
           <p className="text-red-400 text-5xl -rotate-2">絵</p>

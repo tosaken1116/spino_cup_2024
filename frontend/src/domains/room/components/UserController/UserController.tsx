@@ -42,7 +42,7 @@ export const UserController = ({
 
             <button
               type="button"
-              className="w-fit rounded-xl border-2 bg-green-300 text-slate-600 font-semibold px-4 py-2"
+              className="w-fit rounded-xl border-2 bg-green-300 text-slate-600 font-semibold ml-4 py-2"
               onClick={handlePermissionGranted}
             >
               オンにする

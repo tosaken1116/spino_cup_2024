@@ -9,7 +9,7 @@ export const TopPage = () => {
   const routeApi = getRouteApi(Route.fullPath);
   const filters = routeApi.useSearch();
   return (
-    <div className="w-full h-screen flex flex-row">
+    <div className="w-full h-full flex flex-row">
       <div className="w-full h-full flex justify-center items-center">
         <div
           className="animate-jump"
