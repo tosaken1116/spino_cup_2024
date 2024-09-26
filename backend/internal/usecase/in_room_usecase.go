@@ -16,6 +16,7 @@ type SendPointerReq struct {
 	Y         float64
 	Color     string
 	IsClicked bool
+	PenSize   int
 }
 
 type User struct {
@@ -30,6 +31,7 @@ type Pointer struct {
 	X         float64 `json:"x"`
 	Y         float64 `json:"y"`
 	Color     string  `json:"color"`
+	PenSize   int     `json:"penSize"`
 }
 
 type JoinRoomResp struct {
@@ -138,6 +140,7 @@ func (i *activeRoomUsecase) SendPointer(ctx context.Context, req *SendPointerReq
 		X:         req.X,
 		Y:         req.Y,
 		Color:     req.Color,
+		PenSize:   req.PenSize,
 	}
 
 	if err := i.msgSender.Send(ctx, room.OwnerID, map[string]interface{}{
