@@ -33,7 +33,7 @@ export type User = {
   avatarUrl: string;
 };
 export type JoinRoomSchema = {
-  user: User;
+  userId: string;
   ownerId: string;
   screenHeight: number;
   screenWidth: number;

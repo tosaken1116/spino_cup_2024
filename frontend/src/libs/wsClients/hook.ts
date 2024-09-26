@@ -60,8 +60,8 @@ export const useRoomUserWSClient = (
 					return Array.from(map.values());
 				});
 			},
-			JoinRoom: ({ user, ownerId }) => {
-				setUserId(user.id);
+			JoinRoom: ({ userId, ownerId }) => {
+				setUserId(userId);
 				setOwnerId(ownerId);
 			},
 			LeaveRoom: ({ id }) => {

@@ -42,7 +42,7 @@ message User {
 }
 
 message JoinRoomSchema {
-  User user = 1;
+  string userId = 1;
   string ownerId = 2;
   int32 screenHeight = 3;
   int32 screenWidth = 4;
