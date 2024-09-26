@@ -28,6 +28,7 @@ type UserPosition struct {
 	Y         float64 `json:"y"`
 	Color     string  `json:"color"`
 	IsClicked bool    `json:"isClicked"`
+	PenSize   int     `json:"penSize"`
 }
 
 type ChangeCurrentScreen struct {
@@ -117,6 +118,7 @@ func (w *wsHandler) Join(c echo.Context) error {
 				Y:         msg.Payload.Y,
 				Color:     msg.Payload.Color,
 				IsClicked: msg.Payload.IsClicked,
+				PenSize:   msg.Payload.PenSize,
 			}); err != nil {
 				fmt.Printf("err: %v\n", err)
 			}
