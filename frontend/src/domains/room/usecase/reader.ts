@@ -4,12 +4,19 @@ import type { GetRoomProps } from "../types/model";
 import { roomCacheKeyGenerator } from "./cache";
 
 export const useGetRoom = (props: GetRoomProps) => {
-	const repository = useRoomRepository();
-	return useSWR(
-		roomCacheKeyGenerator.getRoom(props),
-		() => repository.getRoom(props),
-		{
-			suspense: true,
-		},
-	);
+  const repository = useRoomRepository();
+  return useSWR(
+    roomCacheKeyGenerator.getRoom(props),
+    () => repository.getRoom(props),
+    {
+      suspense: true,
+    }
+  );
+};
+
+export const useListRoom = () => {
+  const repository = useRoomRepository();
+  return useSWR(roomCacheKeyGenerator.listRoom(), () => repository.listRoom(), {
+    suspense: true,
+  });
 };
