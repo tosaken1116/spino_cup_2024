@@ -75,6 +75,8 @@ jobs:
         run: |
           rm -f .env.test
           echo "VITE_PROD_API_DOMAIN=${{ secrets.VITE_PROD_API_DOMAIN}}" > .env
+          echo "VITE_AUTH_API_KEY=${{ secrets.VITE_AUTH_API_KEY}}" >> .env
+          echo "VITE_AUTH_DOMAIN=${{ secrets.VITE_AUTH_DOMAIN}}" >> .env
       - name: build
         run: pnpm run build
       - name: upload artifact
