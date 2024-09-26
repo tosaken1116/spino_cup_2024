@@ -20,6 +20,7 @@ type roomModel struct {
 	OwnerID     string
 	Name        string
 	Description string
+	OwnerID     string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -39,6 +40,7 @@ func (r *roomRepoImpl) CreateRoom(ctx context.Context, room *model.Room) error {
 		ID:          room.ID.String(),
 		Name:        room.Name,
 		Description: room.Description,
+		OwnerID:     room.OwnerID,
 		CreatedAt:   now,
 		UpdatedAt:   now,
 	}

@@ -17,6 +17,7 @@ type Room struct {
 	ID          RoomID
 	Name        string
 	Description string
+	OwnerID     string
 }
 
 func NewRoomID() (RoomID, error) {
@@ -38,7 +39,7 @@ func (r RoomID) String() string {
 	return ulid.ULID(r).String()
 }
 
-func NewRoom(id RoomID, name, description string) (*Room, error) {
+func NewRoom(id RoomID, name, description, ownerID string) (*Room, error) {
 	if name == "" {
 		return nil, ErrRoomNameRequired
 	}
@@ -47,6 +48,7 @@ func NewRoom(id RoomID, name, description string) (*Room, error) {
 		ID:          id,
 		Name:        name,
 		Description: description,
+		OwnerID:     ownerID,
 	}, nil
 }
 
