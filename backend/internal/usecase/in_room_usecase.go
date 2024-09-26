@@ -43,6 +43,7 @@ type ActiveRoomUsecase interface {
 	JoinRoom(ctx context.Context, userID, roomID string) error
 	SendPointer(ctx context.Context, req *SendPointerReq) error
 	ChangeScreenSize(ctx context.Context, roomID string, height, width int) error
+	LeaveRoom(ctx context.Context, roomID, userID string) error
 }
 
 type activeRoomUsecase struct {
