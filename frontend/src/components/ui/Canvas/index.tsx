@@ -5,6 +5,7 @@ type Props = {
 		x: number;
 		y: number;
 		color: string;
+		size: number;
 	}[];
 	screenSize: {
 		width: number;
@@ -24,7 +25,7 @@ export const Canvas = (props: Props) => {
 		}
 		for (const circle of props.circles) {
 			context.beginPath();
-			context.arc(circle.x, circle.y, 20, 0, 2 * Math.PI, false);
+			context.arc(circle.x, circle.y, circle.size, 0, 2 * Math.PI, false);
 			context.fillStyle = circle.color;
 			context.fill();
 		}

@@ -37,11 +37,14 @@ export const ScreenController = ({ positions }: Props) => {
 				}}
 			>
 				<Canvas
-					circles={positions.map((position) => ({
-						x: position.x * screenSize.width,
-						y: position.y * screenSize.height,
-						color: position.color,
-					}))}
+					circles={positions
+						.filter((position) => position.isClicked)
+						.map((position) => ({
+							x: position.x * screenSize.width,
+							y: position.y * screenSize.height,
+							color: position.color,
+							size: position.penSize,
+						}))}
 					screenSize={screenSize}
 				/>
 				{positions.map((position) => (
