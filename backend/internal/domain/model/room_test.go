@@ -183,7 +183,7 @@ func TestNewRoomFromData(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			got, err := NewRoomFromData(tt.args.id, tt.args.name, tt.args.description)
+			got, err := NewRoomFromData(tt.args.id, tt.args.name, tt.args.description, tt.args.ownerID)
 			tt.assertion(t, err)
 			assert.Equal(t, tt.want, got)
 		})

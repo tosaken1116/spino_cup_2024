@@ -52,7 +52,7 @@ func NewRoom(id RoomID, name, description, ownerID string) (*Room, error) {
 	}, nil
 }
 
-func NewRoomFromData(id, name, description string) (*Room, error) {
+func NewRoomFromData(id, name, description, ownerID string) (*Room, error) {
 	_id, err := ParseRoomID(id)
 	if err != nil {
 		return nil, err
@@ -62,5 +62,6 @@ func NewRoomFromData(id, name, description string) (*Room, error) {
 		ID:          _id,
 		Name:        name,
 		Description: description,
+		OwnerID:     ownerID,
 	}, nil
 }
