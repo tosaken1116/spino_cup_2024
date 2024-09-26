@@ -23,7 +23,7 @@ export const WithAuth: FC<Props> = ({ children }) => {
 	if (loading) {
 		return <p>loading...</p>;
 	}
-	if (token === null) {
+	if (token === null || token==="") {
 		navigate({ to: "/" });
 	}
 	return <Provider value={{ token }}>{children}</Provider>;
