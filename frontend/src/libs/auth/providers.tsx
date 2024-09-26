@@ -62,15 +62,15 @@ export const AuthProvider: FC<Props> = ({ children }) => {
 	useEffect(() => {
 		const check = async () => {
 			if (auth.currentUser) {
-				console.log("check", auth.currentUser);
 				const token = await auth.currentUser.getIdToken();
 				setLoading(false);
 				setToken(token);
-			} else {
-				const res = await signInWithPopup(auth, provider);
-				setToken(await res.user.getIdToken());
-				setLoading(false);
 			}
+			// else {
+			// 	const res = await signInWithPopup(auth, provider);
+			// 	setToken(await res.user.getIdToken());
+			// 	setLoading(false);
+			// };
 		};
 		check();
 	}, []);
@@ -79,7 +79,6 @@ export const AuthProvider: FC<Props> = ({ children }) => {
 		return onAuthStateChanged(auth, async (user) => {
 			setLoading(false);
 			const token = await user?.getIdToken();
-			console.log("onAuthStateChanged", token);
 			setToken(token);
 		});
 	}, []);
