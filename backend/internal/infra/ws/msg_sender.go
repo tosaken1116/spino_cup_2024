@@ -3,6 +3,7 @@ package ws
 import (
 	"context"
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -27,7 +28,8 @@ func (c *Client) run() {
 		case msg := <-c.ch:
 			err := c.conn.WriteJSON(msg)
 			if err != nil {
-				c.err <- err
+				fmt.Printf("write error: %v\n", err)
+				// c.err <- err
 				return
 			}
 		}
