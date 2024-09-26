@@ -70,6 +70,7 @@ func (r *roomRepoImpl) GetRoom(ctx context.Context, id model.RoomID) (*model.Roo
 		data.ID,
 		data.Name,
 		data.Description,
+		data.OwnerID,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create room: %w", err)
@@ -93,6 +94,7 @@ func (r *roomRepoImpl) ListRoom(ctx context.Context) ([]*model.Room, error) {
 			room.ID,
 			room.Name,
 			room.Description,
+			room.OwnerID,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create room: %w", err)
