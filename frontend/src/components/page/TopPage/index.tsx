@@ -15,28 +15,36 @@ export const TopPage = () => {
 					className="animate-jump"
 					style={{ animationDuration: "300ms", animationDelay: "100ms" }}
 				>
-					<p className="text-blue-400 md:text-8xl text-4xl font-bold rotate-2">お</p>
+					<p className="text-blue-400 md:text-8xl text-4xl font-bold rotate-2">
+						お
+					</p>
 				</div>
 
 				<div
 					className=" animate-jump"
 					style={{ animationDuration: "300ms", animationDelay: "150ms" }}
 				>
-					<p className="text-red-400 md:text-9xl text-5xl font-bold -rotate-2">絵</p>
+					<p className="text-red-400 md:text-9xl text-5xl font-bold -rotate-2">
+						絵
+					</p>
 				</div>
 
 				<div
 					className=" animate-jump"
 					style={{ animationDuration: "300ms", animationDelay: "200ms" }}
 				>
-					<p className="text-orange-400 md:text-7xl text-3xl font-bold rotate-3">描</p>
+					<p className="text-orange-400 md:text-7xl text-3xl font-bold rotate-3">
+						描
+					</p>
 				</div>
 
 				<div
 					className=" animate-jump"
 					style={{ animationDuration: "300ms", animationDelay: "250ms" }}
 				>
-					<p className="text-green-400 md:text-8xl text-4xl font-bold rotate-6">き</p>
+					<p className="text-green-400 md:text-8xl text-4xl font-bold rotate-6">
+						き
+					</p>
 				</div>
 
 				<div
