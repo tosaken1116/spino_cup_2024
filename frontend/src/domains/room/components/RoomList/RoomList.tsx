@@ -28,7 +28,6 @@ const RoomListRender = () => {
 					<p>{room.name}</p>
 					<div className="flex flex-row gap-2">
 						<p>{room.ownerId}</p>
-						<p>{room.memberIds.length}</p>
 					</div>
 				</Link>
 			))}
