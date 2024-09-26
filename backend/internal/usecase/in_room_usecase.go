@@ -62,6 +62,7 @@ func NewActiveRoomUsecase(
 		msgSender: msgSender,
 		repo:      repo,
 		rRepo:     rRepo,
+		uRepo:     uRepo,
 	}
 }
 
