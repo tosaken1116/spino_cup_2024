@@ -12,6 +12,7 @@ type RoomDTO struct {
 	Name        string
 	Description string
 	OwnerID     string
+	Owner       *User
 }
 
 func NewRoomDTOFromModel(m *model.Room) *RoomDTO {
@@ -31,11 +32,12 @@ type RoomUsecase interface {
 }
 
 type roomUsecase struct {
-	repo repository.RoomRepository
+	repo  repository.RoomRepository
+	uRepo repository.UserRepository
 }
 
-func NewRoomUsecase(repo repository.RoomRepository) RoomUsecase {
-	return &roomUsecase{repo: repo}
+func NewRoomUsecase(repo repository.RoomRepository, uRepo repository.UserRepository) RoomUsecase {
+	return &roomUsecase{repo: repo, uRepo: uRepo}
 }
 
 // CreateRoom implements RoomUsecase.
@@ -79,9 +81,29 @@ func (r *roomUsecase) ListRoom(ctx context.Context) ([]*RoomDTO, error) {
 		return nil, err
 	}
 
+	userIDs := make([]string, 0, len(rooms))
 	roomDTOs := make([]*RoomDTO, 0, len(rooms))
 	for _, room := range rooms {
 		roomDTOs = append(roomDTOs, NewRoomDTOFromModel(room))
+		userIDs = append(userIDs, room.OwnerID)
+	}
+
+	// Get users
+	userIDmap := make(map[string]*model.User)
+	users, err := r.uRepo.GetUsers(ctx, userIDs)
+	for _, user := range users {
+		userIDmap[user.ID] = user
+	}
+
+	// Set user to room
+	for _, room := range roomDTOs {
+		if user, ok := userIDmap[room.OwnerID]; ok {
+			room.Owner = &User{
+				ID:        user.ID,
+				Name:      user.Name,
+				AvatarURL: user.AvatarURL,
+			}
+		}
 	}
 
 	return roomDTOs, nil

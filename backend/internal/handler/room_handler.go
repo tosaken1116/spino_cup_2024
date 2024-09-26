@@ -11,20 +11,36 @@ import (
 	"github.com/tosaken1116/spino_cup_2024/backend/pkg/auth"
 )
 
+type User struct {
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	AvatarURL string `json:"avatarUrl"`
+}
+
 type RoomResponse struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	OwnerID     string `json:"ownerId"`
+	Owner       *User  `json:"owner,omitempty"`
 }
 
 func NewRoomResponseFromDTO(dto *usecase.RoomDTO) *RoomResponse {
-	return &RoomResponse{
+	resp := &RoomResponse{
 		ID:          dto.ID,
 		Name:        dto.Name,
 		Description: dto.Description,
 		OwnerID:     dto.OwnerID,
 	}
+	if dto.Owner != nil {
+		resp.Owner = &User{
+			ID:        dto.Owner.ID,
+			Name:      dto.Owner.Name,
+			AvatarURL: dto.Owner.AvatarURL,
+		}
+	}
+
+	return resp
 }
 
 type RoomHandler interface {
@@ -98,9 +114,9 @@ func (r *roomHandler) ListRoom(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
 	}
 
-	roomResponses := make([]*RoomResponse, len(rooms))
-	for i, room := range rooms {
-		roomResponses[i] = NewRoomResponseFromDTO(room)
+	roomResponses := make([]*RoomResponse, 0, len(rooms))
+	for _, room := range rooms {
+		roomResponses = append(roomResponses, NewRoomResponseFromDTO(room))
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{"rooms": roomResponses})

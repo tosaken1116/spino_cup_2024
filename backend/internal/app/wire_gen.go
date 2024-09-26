@@ -28,11 +28,11 @@ func New() (*container.App, error) {
 		return nil, err
 	}
 	roomRepository := db.NewRoomRepository(databaseDB)
-	roomUsecase := usecase.NewRoomUsecase(roomRepository)
+	userRepository := db.NewUserRepository(databaseDB)
+	roomUsecase := usecase.NewRoomUsecase(roomRepository, userRepository)
 	roomHandler := handler.NewRoomHandler(roomUsecase)
 	msgSender := ws.NewMsgSender()
 	activeRoomRepo := db.NewActiveRoomRepository()
-	userRepository := db.NewUserRepository(databaseDB)
 	activeRoomUsecase := usecase.NewActiveRoomUsecase(msgSender, activeRoomRepo, roomRepository, userRepository)
 	authClient, err := auth.New()
 	if err != nil {
