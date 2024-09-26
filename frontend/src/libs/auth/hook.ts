@@ -48,14 +48,12 @@ export const useAuthUseCase = () => {
 			setUser(user);
 			setLoading(false);
 			const token = await user?.getIdToken();
-			console.log(token);
 			setToken(token ?? "");
 		});
 	}, []);
 	const login = async (redirectPath: string) => {
 		const res = await signInWithPopup(auth, provider);
 		const token = await res.user.getIdToken();
-		console.log(token);
 		setToken(token);
 		navigate({ to: redirectPath });
 	};
