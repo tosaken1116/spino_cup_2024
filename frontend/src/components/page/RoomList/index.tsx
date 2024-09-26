@@ -1,8 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useRoomUsecase } from "../../../domains/room/usecase";
 import { getBaseUrl } from "../../../libs/baseUrl";
 
-export const RoomTop = () => {
+export const RoomList = () => {
 	const navigation = useNavigate();
 	const handleClick = async () => {
 		const res = await fetch(`${getBaseUrl()}/v1/rooms`, {
@@ -15,7 +14,7 @@ export const RoomTop = () => {
 		});
 		const json = await res.json();
 		navigation({
-			to: "/room/$id",
+			to: "/rooms/$id",
 			params: {
 				id: json.room.id,
 			},

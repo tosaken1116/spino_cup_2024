@@ -4,6 +4,7 @@ import type {
 	ScreenSize,
 	UserPosition,
 } from "../../generated/wsClient/room/model";
+import { useAuthContext } from "../auth/providers";
 import { getBaseUrl } from "../baseUrl";
 
 export type UserAction = {
@@ -29,6 +30,7 @@ export const useRoomUserWSClient = (
 	const baseUrl = getBaseUrl("ws");
 	const [userId, setUserId] = useState<string | null>(null);
 	const [ownerId, setOwnerId] = useState<string | null>(null);
+	const { token } = useAuthContext();
 	const position = useRef<Omit<UserPosition, "id">>({
 		x: 0,
 		y: 0,
@@ -40,7 +42,7 @@ export const useRoomUserWSClient = (
 	const [positions, setPositions] = useState<UserPosition[]>([]);
 	const { handleChangeCurrentPosition, handleChangeCurrentScreen } =
 		useRoomWSClient({
-			baseUrl: `${baseUrl}/rooms/${roomId}/join`,
+			baseUrl: `${baseUrl}/rooms/${roomId}/join?token=${token}`,
 			ChangeScreenSizeToUser: (payload) => {
 				setScreen(payload);
 			},

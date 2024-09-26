@@ -1,4 +1,6 @@
 [
   "/",
-  "/room/$id"
+  "/room/$id",
+  "/rooms/$id",
+  "/rooms"
 ]
