@@ -72,7 +72,7 @@ export const calculateScreenPosition = (props: Props) => {
 		props.current.beta,
 	);
 	return {
-		x: Math.max(Math.min(1 - Math.round(x * 100) / 100, 1), 0),
-		y: Math.max(Math.min(1 - Math.round(y * 100) / 100, 1), 0),
+		x: Math.max(Math.min(1 - Math.round(x * 10000) / 10000, 1), 0),
+		y: Math.max(Math.min(1 - Math.round(y * 10000) / 10000, 1), 0),
 	};
 };
