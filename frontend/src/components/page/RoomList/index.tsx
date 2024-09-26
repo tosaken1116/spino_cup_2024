@@ -22,7 +22,8 @@ export const RoomListPage = () => {
     });
   };
   return (
-    <div>
+    <div className="w-full h-screen flex flex-row ">
+
       <RoomList />
       <button type="button" onClick={handleClick}>
         click to generate room

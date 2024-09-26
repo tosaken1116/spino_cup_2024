@@ -11,7 +11,7 @@ if (!IS_DEV && PROD_BASE_URL === undefined) {
 
 export const getBaseUrl = (type: "ws" | "http" = "http"): string => {
 	if (process.env.NODE_ENV === "development") {
-		return `${type}://${DEV_BASE_URL}`;
+		return `${type}s://${DEV_BASE_URL}`;
 	}
 	return `${type}s://${PROD_BASE_URL}`;
 };
