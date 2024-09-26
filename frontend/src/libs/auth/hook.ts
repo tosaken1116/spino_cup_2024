@@ -32,17 +32,17 @@ export const useAuthUseCase = () => {
 	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [token, setToken] = useState<string | null>(null);
-	// useEffect(() => {
-	// 	const check = async () => {
-	// 		if (auth.currentUser) {
-	// 			setUser(auth.currentUser);
-	// 			const token = await auth.currentUser.getIdToken();
-	// 			setToken(token);
-	// 			setLoading(false);
-	// 		}
-	// 	};
-	// 	check();
-	// }, []);
+	useEffect(() => {
+		const check = async () => {
+			if (auth.currentUser) {
+				setUser(auth.currentUser);
+				const token = await auth.currentUser.getIdToken();
+				setToken(token);
+				setLoading(false);
+			}
+		};
+		check();
+	}, []);
 	useEffect(() => {
 		return onAuthStateChanged(auth, async (user) => {
 			setUser(user);
