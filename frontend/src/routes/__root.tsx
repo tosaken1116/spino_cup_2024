@@ -3,7 +3,7 @@ import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
 export const Route = createRootRoute({
   component: () => (
     <div className="w-screen overflow-x-hidden">
-      <header className="h-10 px-4 py-2">
+      <header className="px-4 py-2">
         <Link to="/" className="[&.active]:font-bold flex flex-row items-end">
           <p className="text-blue-400 text-4xl rotate-2">お</p>
           <p className="text-red-400 text-5xl -rotate-2">絵</p>
@@ -13,7 +13,7 @@ export const Route = createRootRoute({
           <p className="text-blue-400 text-5xl">谷</p>
         </Link>
       </header>
-      <div className="w-full h-[calc(100vh-48px)]">
+      <div className="w-full h-[calc(100vh-64px)]">
         <Outlet />
       </div>
     </div>
