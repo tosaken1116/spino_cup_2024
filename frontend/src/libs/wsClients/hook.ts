@@ -3,6 +3,7 @@ import { useRoomWSClient } from "../../generated/wsClient/room";
 import type {
 	ScreenSize,
 	UserPosition,
+	UserPositionToScreen,
 } from "../../generated/wsClient/room/model";
 import { useAuthContext } from "../auth/providers";
 import { getBaseUrl } from "../baseUrl";
@@ -20,7 +21,7 @@ export type UserAction = {
 
 export type ScreenAction = {
 	type: "screen";
-	positions: UserPosition[];
+	positions: UserPositionToScreen[];
 	handleChangeScreen: (payload: { width: number; height: number }) => void;
 };
 
@@ -39,7 +40,7 @@ export const useRoomUserWSClient = (
 		penSize: 1,
 	});
 	const [screen, setScreen] = useState({ width: 0, height: 0 });
-	const [positions, setPositions] = useState<UserPosition[]>([]);
+	const [positions, setPositions] = useState<UserPositionToScreen[]>([]);
 	const { handleChangeCurrentPosition, handleChangeCurrentScreen } =
 		useRoomWSClient({
 			baseUrl: `${baseUrl}/rooms/${roomId}/join?token=${token}`,
@@ -48,20 +49,23 @@ export const useRoomUserWSClient = (
 			},
 			ChangeUserPosition: (payload) => {
 				setPositions((prev) => {
-					const map = new Map<string, UserPosition>();
+					const map = new Map<string, UserPositionToScreen>();
 					for (const item of prev) {
-						map.set(item.id, item);
+						map.set(item.user.id, item);
 					}
 
 					for (const item of payload) {
-						map.set(item.id, item);
+						map.set(item.user.id, item);
 					}
 					return Array.from(map.values());
 				});
 			},
-			JoinRoom: ({ userId, ownerId }) => {
-				setUserId(userId);
+			JoinRoom: ({ user, ownerId }) => {
+				setUserId(user.id);
 				setOwnerId(ownerId);
+			},
+			LeaveRoom: ({ id }) => {
+				setPositions((prev) => prev.filter((item) => item.user.id !== id));
 			},
 		});
 

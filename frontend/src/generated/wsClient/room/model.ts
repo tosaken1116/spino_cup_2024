@@ -6,7 +6,7 @@ export type Room = {
   description: string;
   ownerId: string;
   memberIds: string[];
-}
+};
 export type UserPosition = {
   x: number;
   y: number;
@@ -14,14 +14,30 @@ export type UserPosition = {
   isClicked: boolean;
   id: string;
   penSize: number;
-}
+};
+export type UserPositionToScreen = {
+  x: number;
+  y: number;
+  color: string;
+  isClicked: boolean;
+  user: User;
+  penSize: number;
+};
 export type ScreenSize = {
   width: number;
   height: number;
-}
-export type InitialState = {
-  userId: string;
+};
+export type User = {
+  id: string;
+  name: string;
+  avatarUrl: string;
+};
+export type JoinRoomSchema = {
+  user: User;
   ownerId: string;
-  height: number;
-  width: number;
-}
+  screenHeight: number;
+  screenWidth: number;
+};
+export type UserId = {
+  id: string;
+};

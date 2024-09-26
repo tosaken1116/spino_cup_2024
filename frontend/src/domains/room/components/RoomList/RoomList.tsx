@@ -14,15 +14,22 @@ const RoomListRender = () => {
 	const { data } = useListRoom();
 	return (
 		<ul className="gap-2 flex flex-col py-4 h-full overflow-y-scroll px-2">
-			{data.rooms.map((room,index) => (
-        <Link to={"/rooms/$id"} params={{id:room.id}} key={room.id} className="animate-fade-in rotate-6 relative text-black w-full h-16 bg-yellow-100 after:contents-[''] after:bg-black after:w-4 after:h-4 after:rounded-full after:absolute after:left-4 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2 hover:-translate-y-2 duration-200" style={{
-          animationDelay: `${index * 100}ms`,
-        }}>
-					<p>{room.id}</p>
-          <p>{room.name}</p>
-          <p>
-            {room.ownerId}
-          </p>
+			{data.rooms.map((room, index) => (
+				<Link
+					as="li"
+					to={"/rooms/$id"}
+					params={{ id: room.id }}
+					key={room.id}
+					className="animate-fade-in rounded-sm rotate-6 relative text-black w-64 bg-yellow-100 after:contents-[''] after:bg-black after:w-4 after:h-4 after:rounded-full after:absolute after:left-4 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2 hover:-translate-y-2 duration-200"
+					style={{
+						animationDelay: `${index * 100}ms`,
+					}}
+				>
+					<p>{room.name}</p>
+					<div className="flex flex-row gap-2">
+						<p>{room.ownerId}</p>
+						<p>{room.memberIds.length}</p>
+					</div>
 				</Link>
 			))}
 		</ul>

@@ -8,9 +8,8 @@ export const Route = createRootRoute({
 					お絵描きの谷
 				</Link>
 			</header>
-			<div  className="w-full h-[calc(100vh-48px)]">
-
-			<Outlet />
+			<div className="w-full h-[calc(100vh-48px)]">
+				<Outlet />
 			</div>
 		</div>
 	),
