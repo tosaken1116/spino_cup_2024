@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -66,7 +67,7 @@ func NewWSHandler(uc usecase.ActiveRoomUsecase, msgSender *ws.MsgSender, authCli
 }
 
 // Join implements WSHandler.
-func (w *wsHandler) Join(c echo.Context) error {
+func (w *wsHandler) Join(c echo.Context) (err error) {
 	roomID := c.Param("id")
 
 	token := c.QueryParam("token")
@@ -92,6 +93,12 @@ func (w *wsHandler) Join(c echo.Context) error {
 		fmt.Printf("err: %v\n", err)
 		return nil
 	}
+
+	defer func() {
+		if _err := w.uc.LeaveRoom(ctx, roomID, userID); _err != nil {
+			errors.Join(err, _err)
+		}
+	}()
 
 	for {
 		_, p, err := ws.ReadMessage()
